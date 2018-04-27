@@ -14,6 +14,12 @@
 		760BD5632092AC1E003E8E8A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 760BD5612092AC1E003E8E8A /* LaunchScreen.storyboard */; };
 		760BD56E2092AC1E003E8E8A /* PJPresentationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 760BD56D2092AC1E003E8E8A /* PJPresentationTests.swift */; };
 		760BD5792092AC1E003E8E8A /* PJPresentationUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 760BD5782092AC1E003E8E8A /* PJPresentationUITests.swift */; };
+		760BD58D2092ACAF003E8E8A /* PJDismissAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 760BD5872092ACAF003E8E8A /* PJDismissAnimator.swift */; };
+		760BD58E2092ACAF003E8E8A /* PJPresentationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 760BD5882092ACAF003E8E8A /* PJPresentationManager.swift */; };
+		760BD58F2092ACAF003E8E8A /* PJPresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 760BD5892092ACAF003E8E8A /* PJPresentationController.swift */; };
+		760BD5902092ACAF003E8E8A /* PJPresentationOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 760BD58A2092ACAF003E8E8A /* PJPresentationOptions.swift */; };
+		760BD5912092ACAF003E8E8A /* PJPresentationAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 760BD58B2092ACAF003E8E8A /* PJPresentationAnimator.swift */; };
+		760BD5922092ACAF003E8E8A /* PJPresentationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 760BD58C2092ACAF003E8E8A /* PJPresentationViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,6 +53,12 @@
 		760BD5742092AC1E003E8E8A /* PJPresentationUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PJPresentationUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		760BD5782092AC1E003E8E8A /* PJPresentationUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PJPresentationUITests.swift; sourceTree = "<group>"; };
 		760BD57A2092AC1E003E8E8A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		760BD5872092ACAF003E8E8A /* PJDismissAnimator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PJDismissAnimator.swift; sourceTree = "<group>"; };
+		760BD5882092ACAF003E8E8A /* PJPresentationManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PJPresentationManager.swift; sourceTree = "<group>"; };
+		760BD5892092ACAF003E8E8A /* PJPresentationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PJPresentationController.swift; sourceTree = "<group>"; };
+		760BD58A2092ACAF003E8E8A /* PJPresentationOptions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PJPresentationOptions.swift; sourceTree = "<group>"; };
+		760BD58B2092ACAF003E8E8A /* PJPresentationAnimator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PJPresentationAnimator.swift; sourceTree = "<group>"; };
+		760BD58C2092ACAF003E8E8A /* PJPresentationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PJPresentationViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -97,6 +109,7 @@
 		760BD5572092AC1D003E8E8A /* PJPresentation */ = {
 			isa = PBXGroup;
 			children = (
+				760BD5862092ACAF003E8E8A /* Class */,
 				760BD5582092AC1E003E8E8A /* AppDelegate.swift */,
 				760BD55A2092AC1E003E8E8A /* ViewController.swift */,
 				760BD55C2092AC1E003E8E8A /* Main.storyboard */,
@@ -123,6 +136,19 @@
 				760BD57A2092AC1E003E8E8A /* Info.plist */,
 			);
 			path = PJPresentationUITests;
+			sourceTree = "<group>";
+		};
+		760BD5862092ACAF003E8E8A /* Class */ = {
+			isa = PBXGroup;
+			children = (
+				760BD5872092ACAF003E8E8A /* PJDismissAnimator.swift */,
+				760BD5882092ACAF003E8E8A /* PJPresentationManager.swift */,
+				760BD5892092ACAF003E8E8A /* PJPresentationController.swift */,
+				760BD58A2092ACAF003E8E8A /* PJPresentationOptions.swift */,
+				760BD58B2092ACAF003E8E8A /* PJPresentationAnimator.swift */,
+				760BD58C2092ACAF003E8E8A /* PJPresentationViewController.swift */,
+			);
+			path = Class;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -256,8 +282,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				760BD5902092ACAF003E8E8A /* PJPresentationOptions.swift in Sources */,
+				760BD58D2092ACAF003E8E8A /* PJDismissAnimator.swift in Sources */,
+				760BD5922092ACAF003E8E8A /* PJPresentationViewController.swift in Sources */,
 				760BD55B2092AC1E003E8E8A /* ViewController.swift in Sources */,
+				760BD5912092ACAF003E8E8A /* PJPresentationAnimator.swift in Sources */,
+				760BD58F2092ACAF003E8E8A /* PJPresentationController.swift in Sources */,
 				760BD5592092AC1E003E8E8A /* AppDelegate.swift in Sources */,
+				760BD58E2092ACAF003E8E8A /* PJPresentationManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
