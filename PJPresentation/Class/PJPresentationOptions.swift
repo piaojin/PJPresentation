@@ -19,9 +19,9 @@ public enum PJPresentationDirection {
 public typealias PJLayoutAnchors = (leadingAnchorContant: CGFloat, trailingAnchorContant: CGFloat, topAnchorContant: CGFloat, bottomAnchorContant: CGFloat)
 
 public struct PJPresentationOptions {
-    public var presentationPosition : PJPresentationPosition = .center
+    public var presentationPosition : PJPresentationPosition = .bottom
     
-    public var presentationDirection: PJPresentationDirection = .topToBottom
+    public var presentationDirection: PJPresentationDirection = .bottomToTop
     
     public var dismissDirection: PJPresentationDirection = .bottomToTop
     
