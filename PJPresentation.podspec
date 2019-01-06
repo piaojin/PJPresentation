@@ -17,7 +17,7 @@ Pod::Spec.new do |s|
 
   s.name         = "PJPresentation"
   s.version      = "0.0.1"
-  s.summary      = "A pop view manager, easy to pop your custom view(just like UIAlertVieController)."
+  s.summary      = "A pop view manager, easy to pop your custom view(just like UIAlertController)."
 
   # This description is used to generate tags and improve search results.
   #   * Think: What does it do? Why did you write it? What is the focus?
@@ -25,7 +25,7 @@ Pod::Spec.new do |s|
   #   * Write the description between the DESC delimiters below.
   #   * Finally, don't worry about the indent, CocoaPods strips it!
   s.description  = <<-DESC
-  A pop view manager, easy to pop your custom view(just like UIAlertVieController).
+  A pop view manager, easy to pop your custom view, easy to use(just like UIAlertController).
                    DESC
 
   s.homepage     = "https://github.com/piaojin/PJPresentation"
@@ -64,8 +64,8 @@ Pod::Spec.new do |s|
   #  the deployment target. You can optionally include the target after the platform.
   #
 
-  s.platform     = :ios
-  # s.platform     = :ios, "5.0"
+  s.swift_version = "4.2"
+  s.platform     = :ios, "11.0"
 
   #  When using multiple platforms
   # s.ios.deployment_target = "5.0"

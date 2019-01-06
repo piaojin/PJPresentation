@@ -55,7 +55,7 @@ public struct PJPresentationOptions {
 
     public var initialSpringVelocity: CGFloat = 1.0 / 0.55
     
-    public var options: UIViewAnimationOptions = .curveLinear
+    public var options: UIView.AnimationOptions = .curveLinear
     
     public static func copyPresentationOptions(presentationOptions: PJPresentationOptions) -> PJPresentationOptions {
         return presentationOptions
