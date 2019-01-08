@@ -1,10 +1,41 @@
-# PJPresentation
-> ### How to use
+> # PJPresentation
+`Swift`,  `AutoLayout`, `iOS`
+
+## Installation
+
+[CocoaPods](http://cocoapods.org) is a dependency manager for Objective-C / Swift, which automates and simplifies the process of using 3rd-party libraries like AFNetworking, PJPresentation in your projects. You can install it with the following command:
+
+```bash
+$ gem install cocoapods
+```
+
+> CocoaPods 0.39.0+ is required to build PJPresentation.
+
+#### Podfile
+
+To integrate PJPresentation into your Xcode project using CocoaPods, specify it in your `Podfile`:
+
+```ruby
+source 'https://github.com/CocoaPods/Specs.git'
+platform :ios, '10.0'
+
+target 'TargetName' do
+pod 'PJPresentation'
+end
+```
+
+Then, run the following command:
+
+```bash
+$ pod install
+```
+
+## How to use
 
 ```
 let contentView = UIView()
 contentView.backgroundColor = .orange
-PJPresentationManager.presentView(contentView: contentView, presentationViewControllerHeight: 200.0)
+PJPresentationControllerManager.presentView(contentView: contentView, presentationViewControllerHeight: 200.0)
 ```
 
 ![image](https://github.com/piaojin/PJPresentation/blob/master/ExampleVideos/0.gif)
@@ -16,7 +47,7 @@ var options = PJPresentationOptions()
 options.dismissDirection = .topToBottom
 options.presentationPosition = .center
 options.presentationDirection = .topToBottom
-PJPresentationManager.presentView(contentView: contentView, presentationViewControllerHeight: 200, presentationOptions: options)
+PJPresentationControllerManager.presentView(contentView: contentView, presentationViewControllerHeight: 200, presentationOptions: options)
 ```
 
 ![image](https://github.com/piaojin/PJPresentation/blob/master/ExampleVideos/1.gif)
@@ -25,7 +56,7 @@ PJPresentationManager.presentView(contentView: contentView, presentationViewCont
 
 ![image](https://github.com/piaojin/PJPresentation/blob/master/ExampleVideos/3.gif)
 
-> ### How to find
+## How to find
 ```
 pod search PJPresentation
 ```
