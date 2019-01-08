@@ -32,7 +32,7 @@ $ pod install
 
 ## How to use
 
-```
+```swift
 let contentView = UIView()
 contentView.backgroundColor = .orange
 PJPresentationControllerManager.presentView(contentView: contentView, presentationViewControllerHeight: 200.0)
@@ -42,7 +42,7 @@ PJPresentationControllerManager.presentView(contentView: contentView, presentati
 
 Use the `PJPresentationOptions` struct to configure the desired effect, such as popup or dismiss direction, size, custom animation effects, etc. 
 
-```
+```swift
 var options = PJPresentationOptions()
 options.dismissDirection = .topToBottom
 options.presentationPosition = .center
