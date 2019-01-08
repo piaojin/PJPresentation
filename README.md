@@ -61,4 +61,11 @@ PJPresentationControllerManager.presentView(contentView: contentView, presentati
 pod search PJPresentation
 ```
 
+## Q&A
+Contact me (804488815@qq.com) if you have any questions or suggestions.
+
+## License
+
+PJPresentation is released under the MIT license. See [LICENSE](https://github.com/piaojin/PJPresentation/blob/master/LICENSE) for details.
+
 
