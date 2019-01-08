@@ -15,7 +15,7 @@
 		760BD56E2092AC1E003E8E8A /* PJPresentationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 760BD56D2092AC1E003E8E8A /* PJPresentationTests.swift */; };
 		760BD5792092AC1E003E8E8A /* PJPresentationUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 760BD5782092AC1E003E8E8A /* PJPresentationUITests.swift */; };
 		760BD58D2092ACAF003E8E8A /* PJDismissAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 760BD5872092ACAF003E8E8A /* PJDismissAnimator.swift */; };
-		760BD58E2092ACAF003E8E8A /* PJPresentationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 760BD5882092ACAF003E8E8A /* PJPresentationManager.swift */; };
+		760BD58E2092ACAF003E8E8A /* PJPresentationControllerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 760BD5882092ACAF003E8E8A /* PJPresentationControllerManager.swift */; };
 		760BD58F2092ACAF003E8E8A /* PJPresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 760BD5892092ACAF003E8E8A /* PJPresentationController.swift */; };
 		760BD5902092ACAF003E8E8A /* PJPresentationOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 760BD58A2092ACAF003E8E8A /* PJPresentationOptions.swift */; };
 		760BD5912092ACAF003E8E8A /* PJPresentationAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 760BD58B2092ACAF003E8E8A /* PJPresentationAnimator.swift */; };
@@ -54,7 +54,7 @@
 		760BD5782092AC1E003E8E8A /* PJPresentationUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PJPresentationUITests.swift; sourceTree = "<group>"; };
 		760BD57A2092AC1E003E8E8A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		760BD5872092ACAF003E8E8A /* PJDismissAnimator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PJDismissAnimator.swift; sourceTree = "<group>"; };
-		760BD5882092ACAF003E8E8A /* PJPresentationManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PJPresentationManager.swift; sourceTree = "<group>"; };
+		760BD5882092ACAF003E8E8A /* PJPresentationControllerManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PJPresentationControllerManager.swift; sourceTree = "<group>"; };
 		760BD5892092ACAF003E8E8A /* PJPresentationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PJPresentationController.swift; sourceTree = "<group>"; };
 		760BD58A2092ACAF003E8E8A /* PJPresentationOptions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PJPresentationOptions.swift; sourceTree = "<group>"; };
 		760BD58B2092ACAF003E8E8A /* PJPresentationAnimator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PJPresentationAnimator.swift; sourceTree = "<group>"; };
@@ -142,7 +142,7 @@
 			isa = PBXGroup;
 			children = (
 				760BD5872092ACAF003E8E8A /* PJDismissAnimator.swift */,
-				760BD5882092ACAF003E8E8A /* PJPresentationManager.swift */,
+				760BD5882092ACAF003E8E8A /* PJPresentationControllerManager.swift */,
 				760BD5892092ACAF003E8E8A /* PJPresentationController.swift */,
 				760BD58A2092ACAF003E8E8A /* PJPresentationOptions.swift */,
 				760BD58B2092ACAF003E8E8A /* PJPresentationAnimator.swift */,
@@ -292,7 +292,7 @@
 				760BD5912092ACAF003E8E8A /* PJPresentationAnimator.swift in Sources */,
 				760BD58F2092ACAF003E8E8A /* PJPresentationController.swift in Sources */,
 				760BD5592092AC1E003E8E8A /* AppDelegate.swift in Sources */,
-				760BD58E2092ACAF003E8E8A /* PJPresentationManager.swift in Sources */,
+				760BD58E2092ACAF003E8E8A /* PJPresentationControllerManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

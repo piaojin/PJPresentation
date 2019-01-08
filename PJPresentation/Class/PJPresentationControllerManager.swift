@@ -1,5 +1,5 @@
 //
-//  PJPresentationManager.swift
+//  PJPresentationControllerManager.swift
 //  UIPresentationControllerDemo
 //
 //  Created by Zoey Weng on 2018/4/9.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class PJPresentationManager: NSObject {
+class PJPresentationControllerManager: NSObject {
     
     @discardableResult
     public static func presentView(contentView: UIView, presentationViewControllerHeight: CGFloat, fromViewController: UIViewController?, presentationOptions: PJPresentationOptions = PJPresentationOptions()) -> PJPresentationViewController {
