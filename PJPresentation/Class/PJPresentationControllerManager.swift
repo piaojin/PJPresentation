@@ -33,6 +33,10 @@ class PJPresentationControllerManager: NSObject {
         return self.presentView(contentView: contentView, presentationViewControllerHeight: presentationViewControllerHeight, fromViewController: self.rootViewController(), presentationOptions: presentationOptions)
     }
     
+    public static func dismiss(presentationViewController: PJPresentationViewController, animated flag: Bool, completion: (() -> Void)? = nil) {
+        presentationViewController.dismiss(animated: flag, completion: completion)
+    }
+    
     private static func rootViewController() -> UIViewController? {
         if let appdelegate = UIApplication.shared.delegate as? AppDelegate {
             if let rootViewController = appdelegate.window?.rootViewController {
