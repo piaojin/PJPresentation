@@ -8,7 +8,7 @@
 
 import UIKit
 
-class PJPresentationControllerManager: NSObject {
+open class PJPresentationControllerManager: NSObject {
     
     @discardableResult
     public static func presentView(contentView: UIView, presentationViewControllerHeight: CGFloat, fromViewController: UIViewController?, presentationOptions: PJPresentationOptions = PJPresentationOptions()) -> PJPresentationViewController {

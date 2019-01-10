@@ -57,6 +57,10 @@ public struct PJPresentationOptions {
     
     public var options: UIView.AnimationOptions = .curveLinear
     
+    public init() {
+        
+    }
+    
     public static func copyPresentationOptions(presentationOptions: PJPresentationOptions) -> PJPresentationOptions {
         return presentationOptions
     }
