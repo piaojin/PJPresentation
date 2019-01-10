@@ -89,7 +89,6 @@
 		760BD54C2092AC1D003E8E8A = {
 			isa = PBXGroup;
 			children = (
-				76C42BFA21E6CDAE00BDF424 /* PJPresentation */,
 				760BD5572092AC1D003E8E8A /* PJPresentationExample */,
 				760BD56C2092AC1E003E8E8A /* PJPresentationTests */,
 				760BD5772092AC1E003E8E8A /* PJPresentationUITests */,
@@ -110,6 +109,7 @@
 		760BD5572092AC1D003E8E8A /* PJPresentationExample */ = {
 			isa = PBXGroup;
 			children = (
+				76C42BFA21E6CDAE00BDF424 /* PJPresentation */,
 				760BD5582092AC1E003E8E8A /* AppDelegate.swift */,
 				760BD55A2092AC1E003E8E8A /* ViewController.swift */,
 				760BD55C2092AC1E003E8E8A /* Main.storyboard */,
