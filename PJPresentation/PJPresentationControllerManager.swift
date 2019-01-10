@@ -38,11 +38,17 @@ open class PJPresentationControllerManager: NSObject {
     }
     
     private static func rootViewController() -> UIViewController? {
-        if let appdelegate = UIApplication.shared.delegate as? AppDelegate {
-            if let rootViewController = appdelegate.window?.rootViewController {
-                return rootViewController
-            }
+        
+        guard let appdelegate = UIApplication.shared.delegate else {
             return nil
+        }
+        
+        guard let window = appdelegate.window else {
+            return nil
+        }
+        
+        if let rootViewController = window?.rootViewController {
+            return rootViewController
         }
         return nil
     }
