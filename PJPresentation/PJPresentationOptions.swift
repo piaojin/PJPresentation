@@ -31,6 +31,8 @@ public struct PJPresentationOptions {
     
     public var contentViewFrame: CGRect = .zero
     
+    public var backgroundColor: UIColor = .clear
+    
     public var transitionDuration: TimeInterval = 0.5
     
     public var dismissTransitionDuration: TimeInterval = 0.5

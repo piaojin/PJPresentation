@@ -28,7 +28,16 @@ class ViewController: UIViewController {
     @objc func click() {
         let contentView = UIView()
         contentView.backgroundColor = .orange
-        PJPresentationControllerManager.presentView(contentView: contentView, presentationViewControllerHeight: 200.0)
+        
+        /****Simple way****/
+//        PJPresentationControllerManager.presentView(contentView: contentView, presentationViewControllerHeight: 200.0)
+        
+        /****Options way****/
+        var options = PJPresentationOptions()
+        options.presentationPosition = .top
+        options.dismissDirection = .topToBottom
+        options.presentationDirection = .topToBottom
+        PJPresentationControllerManager.presentView(contentView: contentView, presentationViewControllerHeight: 250, presentationOptions: options)
     }
 }
 

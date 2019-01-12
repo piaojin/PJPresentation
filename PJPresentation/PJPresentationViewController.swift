@@ -51,18 +51,21 @@ open class PJPresentationViewController: UIViewController {
 
 extension PJPresentationViewController {
     private func initView() {
-        self.view.backgroundColor = .white
+        self.view.backgroundColor = self.presentationOptions.backgroundColor == .clear ? self.contentView.backgroundColor : self.presentationOptions.backgroundColor
         self.contentView.translatesAutoresizingMaskIntoConstraints = false
         self.view.addSubview(self.contentView)
-        self.contentView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: self.contentViewLayoutAnchors.leadingAnchorContant).isActive = true
-        self.contentView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -self.contentViewLayoutAnchors.trailingAnchorContant).isActive = true
+        var contentViewLeadingAnchor: NSLayoutAnchor = self.view.leadingAnchor
+        var contentViewTrailingAnchor: NSLayoutAnchor = self.view.leadingAnchor
+        
         if #available(iOS 11.0, *) {
-            self.contentView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: self.contentViewLayoutAnchors.topAnchorContant).isActive = true
-            self.contentView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -self.contentViewLayoutAnchors.bottomAnchorContant).isActive = true
-        } else {
-            self.contentView.topAnchor.constraint(equalTo: self.topLayoutGuide.bottomAnchor, constant: self.contentViewLayoutAnchors.topAnchorContant).isActive = true
-            self.contentView.bottomAnchor.constraint(equalTo: self.bottomLayoutGuide.bottomAnchor, constant: -self.contentViewLayoutAnchors.bottomAnchorContant).isActive = true
+            contentViewLeadingAnchor = self.view.safeAreaLayoutGuide.leadingAnchor
+            contentViewTrailingAnchor = self.view.safeAreaLayoutGuide.trailingAnchor
         }
+        
+        self.contentView.leadingAnchor.constraint(equalTo: contentViewLeadingAnchor, constant: self.contentViewLayoutAnchors.leadingAnchorContant).isActive = true
+        self.contentView.trailingAnchor.constraint(equalTo: contentViewTrailingAnchor, constant: -self.contentViewLayoutAnchors.trailingAnchorContant).isActive = true
+        self.contentView.topAnchor.constraint(equalTo: self.view.topAnchor, constant: self.contentViewLayoutAnchors.topAnchorContant).isActive = true
+        self.contentView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -self.contentViewLayoutAnchors.bottomAnchorContant).isActive = true
     }
 }
 
