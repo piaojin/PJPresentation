@@ -1,0 +1,6 @@
+framework module PJPresentation {
+  umbrella header "PJPresentation-umbrella.h"
+
+  export *
+  module * { export * }
+}

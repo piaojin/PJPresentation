@@ -1,0 +1,6 @@
+framework module Pods_PJPresentationExample {
+  umbrella header "Pods-PJPresentationExample-umbrella.h"
+
+  export *
+  module * { export * }
+}
