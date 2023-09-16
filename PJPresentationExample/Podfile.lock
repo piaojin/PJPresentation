@@ -1,5 +1,5 @@
 PODS:
-  - PJPresentation (0.1.2)
+  - PJPresentation (0.1.3)
 
 DEPENDENCIES:
   - PJPresentation (from `../../PJPresentation`)
@@ -9,7 +9,7 @@ EXTERNAL SOURCES:
     :path: "../../PJPresentation"
 
 SPEC CHECKSUMS:
-  PJPresentation: 131b30da9e9aa351cb84a51a6398e05d29d8069f
+  PJPresentation: 6a03a0a3820d0d600ebc279eec9242c761a96a23
 
 PODFILE CHECKSUM: 4cd79f448bd185822cb9415f5d96473292cb4138
 
