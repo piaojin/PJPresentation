@@ -11,14 +11,10 @@ import UIKit
 open class PJPresentationController: UIPresentationController {
     //决定了弹出框的frame
     override open var frameOfPresentedViewInContainerView: CGRect {
-        return self.contentViewFrame
+        return self.presentationOptions.frameOfPresentedViewInContainerView
     }
     
     open var presentationOptions: PJPresentationOptions = PJPresentationOptions()
-    
-    open var contentViewFrame: CGRect {
-        return presentationOptions.contentViewFrame
-    }
     
     //遮罩
     open var coverView: UIView = {

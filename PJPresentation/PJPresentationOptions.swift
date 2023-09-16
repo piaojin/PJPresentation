@@ -16,7 +16,7 @@ public enum PJPresentationDirection {
     case topToBottom, bottomToTop, center
 }
 
-public typealias PJLayoutAnchors = (leadingAnchorContant: CGFloat, trailingAnchorContant: CGFloat, topAnchorContant: CGFloat, bottomAnchorContant: CGFloat)
+public typealias PJLayoutAnchorContants = (leadingContant: CGFloat, trailingContant: CGFloat, topContant: CGFloat, bottomContant: CGFloat, widthContant: CGFloat, heightContant: CGFloat)
 
 public struct PJPresentationOptions {
     public var presentationPosition : PJPresentationPosition = .bottom
@@ -29,7 +29,8 @@ public struct PJPresentationOptions {
     
     public var presentationViewControllerFrame: CGRect = .zero
     
-    public var contentViewFrame: CGRect = .zero
+    // 决定了弹出框的frame
+    public var frameOfPresentedViewInContainerView: CGRect = .zero
     
     public var backgroundColor: UIColor = .clear
     
@@ -37,7 +38,8 @@ public struct PJPresentationOptions {
     
     public var dismissTransitionDuration: TimeInterval = 0.5
     
-    public var contentViewLayoutAnchors: PJLayoutAnchors = (leadingAnchorContant: 0.0, trailingAnchorContant: 0.0, topAnchorContant: 0.0, bottomAnchorContant: 0.0)
+    // 决定了弹出框中contentView的frame
+    public var contentViewLayoutContants: PJLayoutAnchorContants = (leadingContant: 0.0, trailingContant: 0.0, topContant: 0.0, bottomContant: 0.0, widthContant: 0.0, heightContant: 0.0)
     
     public var coverViewBackColor = UIColor.black.withAlphaComponent(0.5)
     

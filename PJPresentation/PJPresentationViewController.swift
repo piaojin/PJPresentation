@@ -24,8 +24,8 @@ open class PJPresentationViewController: UIViewController {
         return self.presentationOptions.presentationPosition
     }
     
-    open var contentViewLayoutAnchors: PJLayoutAnchors {
-        return self.presentationOptions.contentViewLayoutAnchors
+    open var contentViewLayoutContants: PJLayoutAnchorContants {
+        return self.presentationOptions.contentViewLayoutContants
     }
     
     open var contentView: UIView = UIView()
@@ -55,17 +55,23 @@ extension PJPresentationViewController {
         self.contentView.translatesAutoresizingMaskIntoConstraints = false
         self.view.addSubview(self.contentView)
         var contentViewLeadingAnchor: NSLayoutAnchor = self.view.leadingAnchor
-        var contentViewTrailingAnchor: NSLayoutAnchor = self.view.leadingAnchor
+        var contentViewTrailingAnchor: NSLayoutAnchor = self.view.trailingAnchor
         
         if #available(iOS 11.0, *) {
             contentViewLeadingAnchor = self.view.safeAreaLayoutGuide.leadingAnchor
             contentViewTrailingAnchor = self.view.safeAreaLayoutGuide.trailingAnchor
         }
         
-        self.contentView.leadingAnchor.constraint(equalTo: contentViewLeadingAnchor, constant: self.contentViewLayoutAnchors.leadingAnchorContant).isActive = true
-        self.contentView.trailingAnchor.constraint(equalTo: contentViewTrailingAnchor, constant: -self.contentViewLayoutAnchors.trailingAnchorContant).isActive = true
-        self.contentView.topAnchor.constraint(equalTo: self.view.topAnchor, constant: self.contentViewLayoutAnchors.topAnchorContant).isActive = true
-        self.contentView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -self.contentViewLayoutAnchors.bottomAnchorContant).isActive = true
+        if contentViewLayoutContants.widthContant > 0, contentViewLayoutContants.heightContant > 0 {
+            self.contentView.widthAnchor.constraint(equalToConstant: self.contentViewLayoutContants.widthContant).isActive = true
+            self.contentView.heightAnchor.constraint(equalToConstant: self.contentViewLayoutContants.heightContant).isActive = true
+            self.contentView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        } else {
+            self.contentView.topAnchor.constraint(equalTo: self.view.topAnchor, constant: self.contentViewLayoutContants.topContant).isActive = true
+            self.contentView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -self.contentViewLayoutContants.bottomContant).isActive = true
+            self.contentView.leadingAnchor.constraint(equalTo: contentViewLeadingAnchor, constant: self.contentViewLayoutContants.leadingContant).isActive = true
+            self.contentView.trailingAnchor.constraint(equalTo: contentViewTrailingAnchor, constant: -self.contentViewLayoutContants.trailingContant).isActive = true
+        }
     }
 }
 
@@ -73,22 +79,22 @@ extension PJPresentationViewController: UIViewControllerTransitioningDelegate {
     public func presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController? {
         let presentationController = PJPresentationController(presentedViewController: presented, presenting: presenting)
         if self.presentationOptions.presentationViewControllerFrame == .zero {
-            var contentViewFrame = CGRect.zero
+            var frameOfPresentedViewInContainerView = CGRect.zero
             switch self.presentationPosition {
             case .bottom:
-                contentViewFrame = CGRect(x: 0.0, y: presented.view.bounds.height - self.presentationViewControllerHeight, width: presented.view.bounds.width, height: self.presentationViewControllerHeight)
+                frameOfPresentedViewInContainerView = CGRect(x: 0.0, y: presented.view.bounds.height - self.presentationViewControllerHeight, width: presented.view.bounds.width, height: self.presentationViewControllerHeight)
                 break
             case .center:
-                contentViewFrame = CGRect(x: 0.0, y: presented.view.center.y - self.presentationViewControllerHeight / 2.0, width: presented.view.bounds.width, height: self.presentationViewControllerHeight)
+                frameOfPresentedViewInContainerView = CGRect(x: 0.0, y: presented.view.center.y - self.presentationViewControllerHeight / 2.0, width: presented.view.bounds.width, height: self.presentationViewControllerHeight)
                 break
             case .top:
-                contentViewFrame = CGRect(x: 0.0, y: 0.0, width: presented.view.bounds.width, height: self.presentationViewControllerHeight)
+                frameOfPresentedViewInContainerView = CGRect(x: 0.0, y: 0.0, width: presented.view.bounds.width, height: self.presentationViewControllerHeight)
                 break
             }
             presentationController.dismissClosure = {
                 self.dismiss(animated: true, completion: self.dismissClosure)
             }
-            self.presentationOptions.contentViewFrame = contentViewFrame
+            self.presentationOptions.frameOfPresentedViewInContainerView = frameOfPresentedViewInContainerView
         }
         presentationController.presentationOptions = self.presentationOptions
         return presentationController
