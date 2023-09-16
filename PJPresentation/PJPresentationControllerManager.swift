@@ -8,7 +8,45 @@
 
 import UIKit
 
+private final class WeakBox<A: AnyObject> {
+    weak var unbox: A?
+    init(_ value: A) {
+        unbox = value
+    }
+}
+
+private struct WeakArray<Element: AnyObject> {
+    private var items: [WeakBox<Element>] = []
+    
+    var last: Element? {
+        return items.last?.unbox
+    }
+    
+    init(_ elements: [Element]) {
+        items = elements.map { WeakBox($0) }
+    }
+}
+
+extension WeakArray: Collection {
+    var startIndex: Int { return items.startIndex }
+    var endIndex: Int { return items.endIndex }
+    
+    subscript(_ index: Int) -> Element? {
+        return items[index].unbox
+    }
+    
+    func index(after idx: Int) -> Int {
+        return items.index(after: idx)
+    }
+    
+    mutating func append( _ newElement: Element) {
+        items.append(WeakBox(newElement))
+    }
+}
+
 open class PJPresentationControllerManager: NSObject {
+    
+    private static var presentedViewControllers: WeakArray<PJPresentationViewController> = WeakArray([])
     
     @discardableResult
     public static func presentView(contentView: UIView, presentationViewControllerHeight: CGFloat, fromViewController: UIViewController?, presentationOptions: PJPresentationOptions = PJPresentationOptions()) -> PJPresentationViewController {
@@ -25,6 +63,7 @@ open class PJPresentationControllerManager: NSObject {
             viewController = fromViewController
         }
         viewController?.present(presentViewController, animated: true, completion: nil)
+        presentedViewControllers.append(presentViewController)
         return presentViewController
     }
     
@@ -35,6 +74,16 @@ open class PJPresentationControllerManager: NSObject {
     
     public static func dismiss(presentationViewController: PJPresentationViewController, animated flag: Bool, completion: (() -> Void)? = nil) {
         presentationViewController.dismiss(animated: flag, completion: completion)
+    }
+    
+    public static func dismiss(animated flag: Bool, completion: (() -> Void)? = nil) {
+        presentedViewControllers.last?.dismiss(animated: flag, completion: completion)
+    }
+    
+    public static func dismissAll(animated flag: Bool, completion: (() -> Void)? = nil) {
+        for vc in presentedViewControllers {
+            vc?.dismiss(animated: flag, completion: completion)
+        }
     }
     
     private static func rootViewController() -> UIViewController? {

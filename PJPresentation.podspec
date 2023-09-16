@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
   #
 
   s.name         = "PJPresentation"
-  s.version      = "0.1.0"
+  s.version      = "0.1.1"
   s.summary      = "A pop view manager, easy to pop your custom view(just like UIAlertController)."
 
   # This description is used to generate tags and improve search results.
@@ -64,7 +64,7 @@ Pod::Spec.new do |s|
   #  the deployment target. You can optionally include the target after the platform.
   #
 
-  s.swift_version = "4.0"
+  s.swift_version = "5.0"
   s.platform     = :ios, "10.0"
 
   #  When using multiple platforms

@@ -23,7 +23,7 @@ public struct PJPresentationOptions {
     
     public var presentationDirection: PJPresentationDirection = .bottomToTop
     
-    public var dismissDirection: PJPresentationDirection = .bottomToTop
+    public var dismissDirection: PJPresentationDirection = .topToBottom
     
     public var presentationViewControllerHeight: CGFloat = 0.0
     

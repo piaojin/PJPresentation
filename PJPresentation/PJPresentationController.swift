@@ -21,7 +21,7 @@ open class PJPresentationController: UIPresentationController {
     }
     
     //遮罩
-    private var coverView: UIView = {
+    open var coverView: UIView = {
         let coverView = UIView()
         coverView.translatesAutoresizingMaskIntoConstraints = false
         coverView.backgroundColor = UIColor.black.withAlphaComponent(0.5)
