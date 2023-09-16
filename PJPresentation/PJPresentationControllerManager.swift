@@ -68,8 +68,36 @@ open class PJPresentationControllerManager: NSObject {
     }
     
     @discardableResult
-    public static func presentView(contentView: UIView, presentationViewControllerHeight: CGFloat, presentationOptions: PJPresentationOptions = PJPresentationOptions()) -> PJPresentationViewController {
-        return self.presentView(contentView: contentView, presentationViewControllerHeight: presentationViewControllerHeight, fromViewController: self.rootViewController(), presentationOptions: presentationOptions)
+    public static func presentViewAtBottom(contentView: UIView, presentationViewControllerHeight: CGFloat, fromViewController: UIViewController?, contentViewSize: CGSize = .zero) -> PJPresentationViewController {
+        var options = PJPresentationOptions()
+        if contentViewSize != .zero {
+            options.contentViewLayoutContants = PJLayoutAnchorContants(leadingContant: 0.0, trailingContant: 0.0, topContant: 0.0, bottomContant: 0.0, widthContant: contentViewSize.width, heightContant: contentViewSize.height)
+        }
+        return self.presentView(contentView: contentView, presentationViewControllerHeight: presentationViewControllerHeight, fromViewController: fromViewController, presentationOptions: options)
+    }
+    
+    @discardableResult
+    public static func presentViewAtCenter(contentView: UIView, presentationViewControllerHeight: CGFloat, fromViewController: UIViewController?, contentViewSize: CGSize = .zero) -> PJPresentationViewController {
+        var options = PJPresentationOptions()
+        options.presentationPosition = .center
+        options.presentationDirection = .center
+        options.dismissDirection = .center
+        if contentViewSize != .zero {
+            options.contentViewLayoutContants = PJLayoutAnchorContants(leadingContant: 0.0, trailingContant: 0.0, topContant: 0.0, bottomContant: 0.0, widthContant: contentViewSize.width, heightContant: contentViewSize.height)
+        }
+        return self.presentView(contentView: contentView, presentationViewControllerHeight: presentationViewControllerHeight, fromViewController: fromViewController, presentationOptions: options)
+    }
+    
+    @discardableResult
+    public static func presentViewAtTop(contentView: UIView, presentationViewControllerHeight: CGFloat, fromViewController: UIViewController?, contentViewSize: CGSize = .zero) -> PJPresentationViewController {
+        var options = PJPresentationOptions()
+        options.presentationPosition = .top
+        options.presentationDirection = .topToBottom
+        options.dismissDirection = .bottomToTop
+        if contentViewSize != .zero {
+            options.contentViewLayoutContants = PJLayoutAnchorContants(leadingContant: 0.0, trailingContant: 0.0, topContant: 0.0, bottomContant: 0.0, widthContant: contentViewSize.width, heightContant: contentViewSize.height)
+        }
+        return self.presentView(contentView: contentView, presentationViewControllerHeight: presentationViewControllerHeight, fromViewController: fromViewController, presentationOptions: options)
     }
     
     public static func dismiss(presentationViewController: PJPresentationViewController, animated flag: Bool, completion: (() -> Void)? = nil) {

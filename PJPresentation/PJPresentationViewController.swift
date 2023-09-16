@@ -51,7 +51,7 @@ open class PJPresentationViewController: UIViewController {
 
 extension PJPresentationViewController {
     private func initView() {
-        self.view.backgroundColor = self.presentationOptions.backgroundColor == .clear ? self.contentView.backgroundColor : self.presentationOptions.backgroundColor
+        self.view.backgroundColor = self.presentationOptions.backgroundColor
         self.contentView.translatesAutoresizingMaskIntoConstraints = false
         self.view.addSubview(self.contentView)
         var contentViewLeadingAnchor: NSLayoutAnchor = self.view.leadingAnchor
