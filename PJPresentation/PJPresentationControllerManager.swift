@@ -81,18 +81,23 @@ open class PJPresentationControllerManager: NSObject {
         return presentViewController
     }
     
+    /// Present contentView at bottom and will reset presentationOptions's presentationPosition = .bottom, presentationDirection = .bottomToTop, dismissDirection = .topToBottom
     @discardableResult
-    public static func presentViewAtBottom(contentView: UIView, presentationViewControllerHeight: CGFloat, fromViewController: UIViewController? = PJViewController.shared.modalViewController(), contentViewSize: CGSize = .zero) -> PJPresentationViewController {
-        var options = PJPresentationOptions()
+    public static func presentViewAtBottom(contentView: UIView, presentationViewControllerHeight: CGFloat, fromViewController: UIViewController? = PJViewController.shared.modalViewController(), contentViewSize: CGSize = .zero, presentationOptions: PJPresentationOptions = PJPresentationOptions()) -> PJPresentationViewController {
+        var options = PJPresentationOptions.copyPresentationOptions(presentationOptions: presentationOptions)
+        options.presentationPosition = .bottom
+        options.presentationDirection = .bottomToTop
+        options.dismissDirection = .topToBottom
         if contentViewSize != .zero {
             options.contentViewLayoutContants = PJLayoutAnchorContants(leadingContant: 0.0, trailingContant: 0.0, topContant: 0.0, bottomContant: 0.0, widthContant: contentViewSize.width, heightContant: contentViewSize.height)
         }
         return self.presentView(contentView: contentView, presentationViewControllerHeight: presentationViewControllerHeight, fromViewController: fromViewController, presentationOptions: options)
     }
     
+    /// Present contentView at center and will reset presentationOptions's presentationPosition = .center, presentationDirection = .center, dismissDirection = .center
     @discardableResult
-    public static func presentViewAtCenter(contentView: UIView, presentationViewControllerHeight: CGFloat, fromViewController: UIViewController? = PJViewController.shared.modalViewController(), contentViewSize: CGSize = .zero) -> PJPresentationViewController {
-        var options = PJPresentationOptions()
+    public static func presentViewAtCenter(contentView: UIView, presentationViewControllerHeight: CGFloat, fromViewController: UIViewController? = PJViewController.shared.modalViewController(), contentViewSize: CGSize = .zero, presentationOptions: PJPresentationOptions = PJPresentationOptions()) -> PJPresentationViewController {
+        var options = PJPresentationOptions.copyPresentationOptions(presentationOptions: presentationOptions)
         options.presentationPosition = .center
         options.presentationDirection = .center
         options.dismissDirection = .center
@@ -102,9 +107,10 @@ open class PJPresentationControllerManager: NSObject {
         return self.presentView(contentView: contentView, presentationViewControllerHeight: presentationViewControllerHeight, fromViewController: fromViewController, presentationOptions: options)
     }
     
+    /// Present contentView at top and will reset presentationOptions's presentationPosition = .top, presentationDirection = .topToBottom, dismissDirection = .bottomToTop
     @discardableResult
-    public static func presentViewAtTop(contentView: UIView, presentationViewControllerHeight: CGFloat, fromViewController: UIViewController? = PJViewController.shared.modalViewController(), contentViewSize: CGSize = .zero) -> PJPresentationViewController {
-        var options = PJPresentationOptions()
+    public static func presentViewAtTop(contentView: UIView, presentationViewControllerHeight: CGFloat, fromViewController: UIViewController? = PJViewController.shared.modalViewController(), contentViewSize: CGSize = .zero, presentationOptions: PJPresentationOptions = PJPresentationOptions()) -> PJPresentationViewController {
+        var options = PJPresentationOptions.copyPresentationOptions(presentationOptions: presentationOptions)
         options.presentationPosition = .top
         options.presentationDirection = .topToBottom
         options.dismissDirection = .bottomToTop
