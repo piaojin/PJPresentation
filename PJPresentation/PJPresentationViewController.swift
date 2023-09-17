@@ -47,6 +47,11 @@ open class PJPresentationViewController: UIViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    
+//    deinit {
+//        PJPresentationControllerManager.presentedViewControllers.remove(by: self.hash)
+//        print("count: \(PJPresentationControllerManager.presentedViewControllers.count)")
+//    }
 }
 
 extension PJPresentationViewController {
@@ -93,6 +98,7 @@ extension PJPresentationViewController: UIViewControllerTransitioningDelegate {
             }
             presentationController.dismissClosure = {
                 self.dismiss(animated: true, completion: self.dismissClosure)
+                PJPresentationControllerManager.presentedViewControllers.remove(by: self.hash)
             }
             self.presentationOptions.frameOfPresentedViewInContainerView = frameOfPresentedViewInContainerView
         }

@@ -8,14 +8,16 @@
 
 import UIKit
 
+/// 弹出的位置, center: 从屏幕中心弹出
 public enum PJPresentationPosition {
     case bottom, center, top
 }
-
+/// topToBottom: 从上往下
 public enum PJPresentationDirection {
     case topToBottom, bottomToTop, center
 }
 
+/// Note: widthContant & heightContant 的优先级高于其他约束
 public typealias PJLayoutAnchorContants = (leadingContant: CGFloat, trailingContant: CGFloat, topContant: CGFloat, bottomContant: CGFloat, widthContant: CGFloat, heightContant: CGFloat)
 
 public struct PJPresentationOptions {
@@ -47,7 +49,7 @@ public struct PJPresentationOptions {
     
     public var isTapCoverViewToDissmiss = true
     
-    public var isUseSpringAnimation = true
+    public var isUseSpringAnimation = false
     
     public var customPresentationAnimator: UIViewControllerAnimatedTransitioning?
     

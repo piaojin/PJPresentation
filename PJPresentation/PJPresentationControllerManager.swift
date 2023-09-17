@@ -8,14 +8,16 @@
 
 import UIKit
 
-private final class WeakBox<A: AnyObject> {
+private final class WeakBox<A: AnyObject> where A: NSObjectProtocol  {
     weak var unbox: A?
+    var hash: Int = -1
     init(_ value: A) {
         unbox = value
+        hash = value.hash
     }
 }
 
-private struct WeakArray<Element: AnyObject> {
+internal struct WeakArray<Element: AnyObject> where Element: NSObjectProtocol {
     private var items: [WeakBox<Element>] = []
     
     var last: Element? {
@@ -39,17 +41,29 @@ extension WeakArray: Collection {
         return items.index(after: idx)
     }
     
-    mutating func append( _ newElement: Element) {
+    mutating func append(_ newElement: Element) {
         items.append(WeakBox(newElement))
+    }
+    
+    mutating func remove(by hash: Int) {
+        if let index = items.firstIndex(where: {
+            $0.hash == hash
+        }) {
+            items.remove(at: index)
+        }
+    }
+    
+    mutating func removeAll() {
+        items.removeAll()
     }
 }
 
 open class PJPresentationControllerManager: NSObject {
     
-    private static var presentedViewControllers: WeakArray<PJPresentationViewController> = WeakArray([])
+    internal static var presentedViewControllers: WeakArray<PJPresentationViewController> = WeakArray([])
     
     @discardableResult
-    public static func presentView(contentView: UIView, presentationViewControllerHeight: CGFloat, fromViewController: UIViewController?, presentationOptions: PJPresentationOptions = PJPresentationOptions()) -> PJPresentationViewController {
+    public static func presentView(contentView: UIView, presentationViewControllerHeight: CGFloat, fromViewController: UIViewController? = PJViewController.shared.modalViewController(), presentationOptions: PJPresentationOptions = PJPresentationOptions()) -> PJPresentationViewController {
         let presentViewController = PJPresentationViewController(presentationViewControllerHeight: presentationViewControllerHeight, contentView: contentView, presentationOptions: presentationOptions)
         //UIModalPresentationStyle
         presentViewController.modalPresentationStyle = .custom
@@ -59,7 +73,7 @@ open class PJPresentationControllerManager: NSObject {
         var viewController: UIViewController?
         if let fromViewController = fromViewController {
             viewController = fromViewController
-        } else if let fromViewController = self.rootViewController() {
+        } else if let fromViewController = PJViewController.shared.rootViewController() {
             viewController = fromViewController
         }
         viewController?.present(presentViewController, animated: true, completion: nil)
@@ -68,7 +82,7 @@ open class PJPresentationControllerManager: NSObject {
     }
     
     @discardableResult
-    public static func presentViewAtBottom(contentView: UIView, presentationViewControllerHeight: CGFloat, fromViewController: UIViewController?, contentViewSize: CGSize = .zero) -> PJPresentationViewController {
+    public static func presentViewAtBottom(contentView: UIView, presentationViewControllerHeight: CGFloat, fromViewController: UIViewController? = PJViewController.shared.modalViewController(), contentViewSize: CGSize = .zero) -> PJPresentationViewController {
         var options = PJPresentationOptions()
         if contentViewSize != .zero {
             options.contentViewLayoutContants = PJLayoutAnchorContants(leadingContant: 0.0, trailingContant: 0.0, topContant: 0.0, bottomContant: 0.0, widthContant: contentViewSize.width, heightContant: contentViewSize.height)
@@ -77,7 +91,7 @@ open class PJPresentationControllerManager: NSObject {
     }
     
     @discardableResult
-    public static func presentViewAtCenter(contentView: UIView, presentationViewControllerHeight: CGFloat, fromViewController: UIViewController?, contentViewSize: CGSize = .zero) -> PJPresentationViewController {
+    public static func presentViewAtCenter(contentView: UIView, presentationViewControllerHeight: CGFloat, fromViewController: UIViewController? = PJViewController.shared.modalViewController(), contentViewSize: CGSize = .zero) -> PJPresentationViewController {
         var options = PJPresentationOptions()
         options.presentationPosition = .center
         options.presentationDirection = .center
@@ -89,7 +103,7 @@ open class PJPresentationControllerManager: NSObject {
     }
     
     @discardableResult
-    public static func presentViewAtTop(contentView: UIView, presentationViewControllerHeight: CGFloat, fromViewController: UIViewController?, contentViewSize: CGSize = .zero) -> PJPresentationViewController {
+    public static func presentViewAtTop(contentView: UIView, presentationViewControllerHeight: CGFloat, fromViewController: UIViewController? = PJViewController.shared.modalViewController(), contentViewSize: CGSize = .zero) -> PJPresentationViewController {
         var options = PJPresentationOptions()
         options.presentationPosition = .top
         options.presentationDirection = .topToBottom
@@ -102,31 +116,20 @@ open class PJPresentationControllerManager: NSObject {
     
     public static func dismiss(presentationViewController: PJPresentationViewController, animated flag: Bool, completion: (() -> Void)? = nil) {
         presentationViewController.dismiss(animated: flag, completion: completion)
+        PJPresentationControllerManager.presentedViewControllers.remove(by: presentationViewController.hash)
     }
     
     public static func dismiss(animated flag: Bool, completion: (() -> Void)? = nil) {
-        presentedViewControllers.last?.dismiss(animated: flag, completion: completion)
+        if let last = presentedViewControllers.last {
+            last.dismiss(animated: flag, completion: completion)
+            PJPresentationControllerManager.presentedViewControllers.remove(by: last.hash)
+        }
     }
     
     public static func dismissAll(animated flag: Bool, completion: (() -> Void)? = nil) {
         for vc in presentedViewControllers {
             vc?.dismiss(animated: flag, completion: completion)
         }
-    }
-    
-    private static func rootViewController() -> UIViewController? {
-        
-        guard let appdelegate = UIApplication.shared.delegate else {
-            return nil
-        }
-        
-        guard let window = appdelegate.window else {
-            return nil
-        }
-        
-        if let rootViewController = window?.rootViewController {
-            return rootViewController
-        }
-        return nil
+        PJPresentationControllerManager.presentedViewControllers.removeAll()
     }
 }
