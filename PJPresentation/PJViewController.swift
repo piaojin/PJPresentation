@@ -23,5 +23,30 @@ public struct PJViewController {
 
         return viewController
     }
+    
+    public func displayViewController() -> UIViewController? {
+        guard let appDelegate = UIApplication.shared.delegate else {
+            return nil
+        }
+        
+        guard let window = appDelegate.window else {
+            return nil
+        }
+        
+        var result = window?.rootViewController
+        while result?.presentedViewController != nil {
+            result = result?.presentedViewController
+        }
+
+        if result is UITabBarController {
+            result = (result as? UITabBarController)?.selectedViewController
+        }
+        
+        if result is UINavigationController {
+            result = (result as? UINavigationController)?.topViewController
+        }
+
+        return result
+    }
 }
 

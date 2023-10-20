@@ -62,22 +62,25 @@ open class PJPresentationControllerManager: NSObject {
     
     internal static var presentedViewControllers: WeakArray<PJPresentationViewController> = WeakArray([])
     
+    private static var reTryCountDic: [Int: Int] = [:]
+    
     @discardableResult
-    public static func presentView(contentView: UIView, presentationViewControllerHeight: CGFloat, fromViewController: UIViewController? = PJViewController.shared.modalViewController(), presentationOptions: PJPresentationOptions = PJPresentationOptions()) -> PJPresentationViewController {
+    public static func presentView(contentView: UIView, presentationViewControllerHeight: CGFloat, fromViewController: UIViewController? = nil, presentationOptions: PJPresentationOptions = PJPresentationOptions()) -> PJPresentationViewController {
         let presentViewController = PJPresentationViewController(presentationViewControllerHeight: presentationViewControllerHeight, contentView: contentView, presentationOptions: presentationOptions)
         //UIModalPresentationStyle
         presentViewController.modalPresentationStyle = .custom
         var tempOptions = PJPresentationOptions.copyPresentationOptions(presentationOptions: presentationOptions)
         tempOptions.presentationViewControllerHeight = presentationViewControllerHeight
         presentViewController.presentationOptions = tempOptions
-        var viewController: UIViewController?
-        if let fromViewController = fromViewController {
-            viewController = fromViewController
-        } else if let fromViewController = PJViewController.shared.rootViewController() {
-            viewController = fromViewController
+        let viewController = getAvailableFromViewController(fromViewController)
+        
+        if viewController?.isBeingDismissed == true || viewController?.isBeingPresented == true {
+            reTryToPresent(presentViewController, fromViewController)
+        } else {
+            viewController?.present(presentViewController, animated: true, completion: nil)
+            presentedViewControllers.append(presentViewController)
         }
-        viewController?.present(presentViewController, animated: true, completion: nil)
-        presentedViewControllers.append(presentViewController)
+        
         return presentViewController
     }
     
@@ -137,5 +140,43 @@ open class PJPresentationControllerManager: NSObject {
             vc?.dismiss(animated: flag, completion: completion)
         }
         PJPresentationControllerManager.presentedViewControllers.removeAll()
+    }
+    
+    private static func reTryToPresent(_ presentViewController: PJPresentationViewController, _ fromViewController: UIViewController?) {
+        var reTryCount = reTryCountDic[presentViewController.hash]
+        if reTryCount == nil {
+            reTryCount = 3
+            reTryCountDic[presentViewController.hash] = reTryCount
+        }
+        
+        let count = reTryCount ?? 0
+        if count >= 0 {
+            reTryCountDic[presentViewController.hash] = count - 1
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                let viewController = getAvailableFromViewController(fromViewController)
+                if viewController?.isBeingDismissed == true || viewController?.isBeingPresented == true {
+                    reTryToPresent(presentViewController, fromViewController)
+                } else {
+                    viewController?.present(presentViewController, animated: true, completion: nil)
+                    reTryCountDic[presentViewController.hash] = nil
+                    presentedViewControllers.append(presentViewController)
+                }
+            }
+        } else {
+            reTryCountDic[presentViewController.hash] = nil
+            #if DEBUG
+            print("[PJPresentation] ⚠️⚠️⚠️The fromViewController is isBeingDismissed or isBeingPresented and may cause warning: Attempt to present <xxx> on <xxx> which is already presenting <xxx>")
+            #endif
+        }
+    }
+    
+    private static func getAvailableFromViewController(_ sourceViewController: UIViewController?) -> UIViewController? {
+        var viewController: UIViewController?
+        if let sourceViewController = sourceViewController {
+            viewController = sourceViewController
+        } else if let sourceViewController = PJViewController.shared.displayViewController()  {
+            viewController = sourceViewController
+        }
+        return viewController
     }
 }
