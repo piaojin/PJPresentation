@@ -132,13 +132,26 @@ open class PJPresentationControllerManager: NSObject {
         if let last = presentedViewControllers.last {
             last.dismiss(animated: flag, completion: completion)
             PJPresentationControllerManager.presentedViewControllers.remove(by: last.hash)
+        } else {
+            completion?()
         }
     }
     
     public static func dismissAll(animated flag: Bool, completion: (() -> Void)? = nil) {
+        var dismissCount = presentedViewControllers.count
         for vc in presentedViewControllers {
-            vc?.dismiss(animated: flag, completion: completion)
+            vc?.dismiss(animated: flag, completion: {
+                dismissCount -= 1
+                if dismissCount <= 0 {
+                    completion?()
+                }
+            })
         }
+        
+        if presentedViewControllers.isEmpty {
+            completion?()
+        }
+        
         PJPresentationControllerManager.presentedViewControllers.removeAll()
     }
     
