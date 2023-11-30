@@ -13,7 +13,7 @@ open class PJPresentationViewController: UIViewController {
     open var presentationOptions: PJPresentationOptions = PJPresentationOptions()
     
     open var presentationViewControllerHeight: CGFloat {
-        return self.presentationOptions.presentationViewControllerHeight
+        return presentationOptions.presentationViewControllerHeight
     }
     
     open var dismissClosure: (() -> Void)?
@@ -30,7 +30,7 @@ open class PJPresentationViewController: UIViewController {
     
     open var contentView: UIView = UIView()
     
-    convenience public init(presentationViewControllerHeight: CGFloat, contentView: UIView, presentationOptions: PJPresentationOptions) {
+    convenience public init(contentView: UIView, presentationOptions: PJPresentationOptions) {
         self.init()
         self.presentationOptions = presentationOptions
         self.contentView = contentView
@@ -47,11 +47,6 @@ open class PJPresentationViewController: UIViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
-//    deinit {
-//        PJPresentationControllerManager.presentedViewControllers.remove(by: self.hash)
-//        print("count: \(PJPresentationControllerManager.presentedViewControllers.count)")
-//    }
 }
 
 extension PJPresentationViewController {

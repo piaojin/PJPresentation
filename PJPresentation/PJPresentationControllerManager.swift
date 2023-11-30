@@ -8,7 +8,7 @@
 
 import UIKit
 
-private final class WeakBox<A: AnyObject> where A: NSObjectProtocol  {
+private final class PJWeakBox<A: AnyObject> where A: NSObjectProtocol  {
     weak var unbox: A?
     var hash: Int = -1
     init(_ value: A) {
@@ -17,35 +17,35 @@ private final class WeakBox<A: AnyObject> where A: NSObjectProtocol  {
     }
 }
 
-internal struct WeakArray<Element: AnyObject> where Element: NSObjectProtocol {
-    private var items: [WeakBox<Element>] = []
+public struct PJWeakArray<Element: AnyObject> where Element: NSObjectProtocol {
+    private var items: [PJWeakBox<Element>] = []
     
     var last: Element? {
         return items.last?.unbox
     }
     
     init(_ elements: [Element]) {
-        items = elements.map { WeakBox($0) }
+        items = elements.map { PJWeakBox($0) }
     }
 }
 
-extension WeakArray: Collection {
-    var startIndex: Int { return items.startIndex }
-    var endIndex: Int { return items.endIndex }
+extension PJWeakArray: Collection {
+    public var startIndex: Int { return items.startIndex }
+    public var endIndex: Int { return items.endIndex }
     
-    subscript(_ index: Int) -> Element? {
+    public subscript(_ index: Int) -> Element? {
         return items[index].unbox
     }
     
-    func index(after idx: Int) -> Int {
+    public func index(after idx: Int) -> Int {
         return items.index(after: idx)
     }
     
-    mutating func append(_ newElement: Element) {
-        items.append(WeakBox(newElement))
+    public mutating func append(_ newElement: Element) {
+        items.append(PJWeakBox(newElement))
     }
     
-    mutating func remove(by hash: Int) {
+    public mutating func remove(by hash: Int) {
         if let index = items.firstIndex(where: {
             $0.hash == hash
         }) {
@@ -53,20 +53,36 @@ extension WeakArray: Collection {
         }
     }
     
-    mutating func removeAll() {
+    public mutating func removeAll() {
         items.removeAll()
     }
 }
 
 open class PJPresentationControllerManager: NSObject {
+    /// The all presented ViewControllers
+    public static var presentedViewControllers: PJWeakArray<PJPresentationViewController> = PJWeakArray([])
     
-    internal static var presentedViewControllers: WeakArray<PJPresentationViewController> = WeakArray([])
+    /// The top displaying ViewController
+    public static var topViewController: PJPresentationViewController? {
+        return presentedViewControllers.last
+    }
     
+    /// The top displaying ContentView
+    public static var topContentView: UIView? {
+        return topViewController?.contentView
+    }
+    
+    /// Is current displaying ContentView
+    public static var isDisplaying: Bool {
+        return !presentedViewControllers.isEmpty
+    }
+    
+    /// Retry present viewcontroller count when present failed.
     private static var reTryCountDic: [Int: Int] = [:]
     
     @discardableResult
-    public static func presentView(contentView: UIView, presentationViewControllerHeight: CGFloat, fromViewController: UIViewController? = nil, presentationOptions: PJPresentationOptions = PJPresentationOptions()) -> PJPresentationViewController {
-        let presentViewController = PJPresentationViewController(presentationViewControllerHeight: presentationViewControllerHeight, contentView: contentView, presentationOptions: presentationOptions)
+    public static func presentView(contentView: UIView, presentationViewControllerHeight: CGFloat, fromViewController: UIViewController? = nil, presentationOptions: PJPresentationOptions = PJPresentationOptions(), completion: (() -> Void)? = nil) -> PJPresentationViewController {
+        let presentViewController = PJPresentationViewController(contentView: contentView, presentationOptions: presentationOptions)
         //UIModalPresentationStyle
         presentViewController.modalPresentationStyle = .custom
         var tempOptions = PJPresentationOptions.copyPresentationOptions(presentationOptions: presentationOptions)
@@ -77,7 +93,7 @@ open class PJPresentationControllerManager: NSObject {
         if viewController?.isBeingDismissed == true || viewController?.isBeingPresented == true {
             reTryToPresent(presentViewController, fromViewController)
         } else {
-            viewController?.present(presentViewController, animated: true, completion: nil)
+            viewController?.present(presentViewController, animated: true, completion: completion)
             presentedViewControllers.append(presentViewController)
         }
         
@@ -86,7 +102,7 @@ open class PJPresentationControllerManager: NSObject {
     
     /// Present contentView at bottom and will reset presentationOptions's presentationPosition = .bottom, presentationDirection = .bottomToTop, dismissDirection = .topToBottom
     @discardableResult
-    public static func presentViewAtBottom(contentView: UIView, presentationViewControllerHeight: CGFloat, fromViewController: UIViewController? = PJViewController.shared.modalViewController(), contentViewSize: CGSize = .zero, presentationOptions: PJPresentationOptions = PJPresentationOptions()) -> PJPresentationViewController {
+    public static func presentViewAtBottom(contentView: UIView, presentationViewControllerHeight: CGFloat, fromViewController: UIViewController? = PJViewController.shared.modalViewController(), contentViewSize: CGSize = .zero, presentationOptions: PJPresentationOptions = PJPresentationOptions(), completion: (() -> Void)? = nil) -> PJPresentationViewController {
         var options = PJPresentationOptions.copyPresentationOptions(presentationOptions: presentationOptions)
         options.presentationPosition = .bottom
         options.presentationDirection = .bottomToTop
@@ -94,12 +110,12 @@ open class PJPresentationControllerManager: NSObject {
         if contentViewSize != .zero {
             options.contentViewLayoutContants = PJLayoutAnchorContants(leadingContant: 0.0, trailingContant: 0.0, topContant: 0.0, bottomContant: 0.0, widthContant: contentViewSize.width, heightContant: contentViewSize.height)
         }
-        return self.presentView(contentView: contentView, presentationViewControllerHeight: presentationViewControllerHeight, fromViewController: fromViewController, presentationOptions: options)
+        return self.presentView(contentView: contentView, presentationViewControllerHeight: presentationViewControllerHeight, fromViewController: fromViewController, presentationOptions: options, completion: completion)
     }
     
     /// Present contentView at center and will reset presentationOptions's presentationPosition = .center, presentationDirection = .center, dismissDirection = .center
     @discardableResult
-    public static func presentViewAtCenter(contentView: UIView, presentationViewControllerHeight: CGFloat, fromViewController: UIViewController? = PJViewController.shared.modalViewController(), contentViewSize: CGSize = .zero, presentationOptions: PJPresentationOptions = PJPresentationOptions()) -> PJPresentationViewController {
+    public static func presentViewAtCenter(contentView: UIView, presentationViewControllerHeight: CGFloat, fromViewController: UIViewController? = PJViewController.shared.modalViewController(), contentViewSize: CGSize = .zero, presentationOptions: PJPresentationOptions = PJPresentationOptions(), completion: (() -> Void)? = nil) -> PJPresentationViewController {
         var options = PJPresentationOptions.copyPresentationOptions(presentationOptions: presentationOptions)
         options.presentationPosition = .center
         options.presentationDirection = .center
@@ -107,12 +123,12 @@ open class PJPresentationControllerManager: NSObject {
         if contentViewSize != .zero {
             options.contentViewLayoutContants = PJLayoutAnchorContants(leadingContant: 0.0, trailingContant: 0.0, topContant: 0.0, bottomContant: 0.0, widthContant: contentViewSize.width, heightContant: contentViewSize.height)
         }
-        return self.presentView(contentView: contentView, presentationViewControllerHeight: presentationViewControllerHeight, fromViewController: fromViewController, presentationOptions: options)
+        return self.presentView(contentView: contentView, presentationViewControllerHeight: presentationViewControllerHeight, fromViewController: fromViewController, presentationOptions: options, completion: completion)
     }
     
     /// Present contentView at top and will reset presentationOptions's presentationPosition = .top, presentationDirection = .topToBottom, dismissDirection = .bottomToTop
     @discardableResult
-    public static func presentViewAtTop(contentView: UIView, presentationViewControllerHeight: CGFloat, fromViewController: UIViewController? = PJViewController.shared.modalViewController(), contentViewSize: CGSize = .zero, presentationOptions: PJPresentationOptions = PJPresentationOptions()) -> PJPresentationViewController {
+    public static func presentViewAtTop(contentView: UIView, presentationViewControllerHeight: CGFloat, fromViewController: UIViewController? = PJViewController.shared.modalViewController(), contentViewSize: CGSize = .zero, presentationOptions: PJPresentationOptions = PJPresentationOptions(), completion: (() -> Void)? = nil) -> PJPresentationViewController {
         var options = PJPresentationOptions.copyPresentationOptions(presentationOptions: presentationOptions)
         options.presentationPosition = .top
         options.presentationDirection = .topToBottom
@@ -120,7 +136,7 @@ open class PJPresentationControllerManager: NSObject {
         if contentViewSize != .zero {
             options.contentViewLayoutContants = PJLayoutAnchorContants(leadingContant: 0.0, trailingContant: 0.0, topContant: 0.0, bottomContant: 0.0, widthContant: contentViewSize.width, heightContant: contentViewSize.height)
         }
-        return self.presentView(contentView: contentView, presentationViewControllerHeight: presentationViewControllerHeight, fromViewController: fromViewController, presentationOptions: options)
+        return self.presentView(contentView: contentView, presentationViewControllerHeight: presentationViewControllerHeight, fromViewController: fromViewController, presentationOptions: options, completion: completion)
     }
     
     public static func dismiss(presentationViewController: PJPresentationViewController, animated flag: Bool, completion: (() -> Void)? = nil) {
@@ -155,7 +171,7 @@ open class PJPresentationControllerManager: NSObject {
         PJPresentationControllerManager.presentedViewControllers.removeAll()
     }
     
-    private static func reTryToPresent(_ presentViewController: PJPresentationViewController, _ fromViewController: UIViewController?) {
+    private static func reTryToPresent(_ presentViewController: PJPresentationViewController, _ fromViewController: UIViewController?, completion: (() -> Void)? = nil) {
         var reTryCount = reTryCountDic[presentViewController.hash]
         if reTryCount == nil {
             reTryCount = 3
@@ -170,7 +186,7 @@ open class PJPresentationControllerManager: NSObject {
                 if viewController?.isBeingDismissed == true || viewController?.isBeingPresented == true {
                     reTryToPresent(presentViewController, fromViewController)
                 } else {
-                    viewController?.present(presentViewController, animated: true, completion: nil)
+                    viewController?.present(presentViewController, animated: true, completion: completion)
                     reTryCountDic[presentViewController.hash] = nil
                     presentedViewControllers.append(presentViewController)
                 }
