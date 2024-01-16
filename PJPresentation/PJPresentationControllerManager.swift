@@ -81,9 +81,9 @@ open class PJPresentationControllerManager: NSObject {
     private static var reTryCountDic: [Int: Int] = [:]
     
     @discardableResult
-    public static func presentView(contentView: UIView, presentationViewControllerHeight: CGFloat, fromViewController: UIViewController? = nil, presentationOptions: PJPresentationOptions = PJPresentationOptions(), completion: (() -> Void)? = nil) -> PJPresentationViewController {
+    public static func presentView(contentView: UIView, presentationViewControllerHeight: CGFloat, fromViewController: UIViewController? = nil, presentationOptions: PJPresentationOptions = PJPresentationOptions(), completion: (() -> Void)? = nil, dismissHandler: (() -> Void)? = nil) -> PJPresentationViewController {
         let presentViewController = PJPresentationViewController(contentView: contentView, presentationOptions: presentationOptions)
-        //UIModalPresentationStyle
+        // UIModalPresentationStyle
         presentViewController.modalPresentationStyle = .custom
         var tempOptions = PJPresentationOptions.copyPresentationOptions(presentationOptions: presentationOptions)
         tempOptions.presentationViewControllerHeight = presentationViewControllerHeight
@@ -97,12 +97,15 @@ open class PJPresentationControllerManager: NSObject {
             presentedViewControllers.append(presentViewController)
         }
         
+        presentViewController.dismissClosure = {
+            dismissHandler?()
+        }
         return presentViewController
     }
     
     /// Present contentView at bottom and will reset presentationOptions's presentationPosition = .bottom, presentationDirection = .bottomToTop, dismissDirection = .topToBottom
     @discardableResult
-    public static func presentViewAtBottom(contentView: UIView, presentationViewControllerHeight: CGFloat, fromViewController: UIViewController? = PJViewController.shared.modalViewController(), contentViewSize: CGSize = .zero, presentationOptions: PJPresentationOptions = PJPresentationOptions(), completion: (() -> Void)? = nil) -> PJPresentationViewController {
+    public static func presentViewAtBottom(contentView: UIView, presentationViewControllerHeight: CGFloat, fromViewController: UIViewController? = PJViewController.shared.modalViewController(), contentViewSize: CGSize = .zero, presentationOptions: PJPresentationOptions = PJPresentationOptions(), completion: (() -> Void)? = nil, dismissHandler: (() -> Void)? = nil) -> PJPresentationViewController {
         var options = PJPresentationOptions.copyPresentationOptions(presentationOptions: presentationOptions)
         options.presentationPosition = .bottom
         options.presentationDirection = .bottomToTop
@@ -110,12 +113,12 @@ open class PJPresentationControllerManager: NSObject {
         if contentViewSize != .zero {
             options.contentViewLayoutContants = PJLayoutAnchorContants(leadingContant: 0.0, trailingContant: 0.0, topContant: 0.0, bottomContant: 0.0, widthContant: contentViewSize.width, heightContant: contentViewSize.height)
         }
-        return self.presentView(contentView: contentView, presentationViewControllerHeight: presentationViewControllerHeight, fromViewController: fromViewController, presentationOptions: options, completion: completion)
+        return self.presentView(contentView: contentView, presentationViewControllerHeight: presentationViewControllerHeight, fromViewController: fromViewController, presentationOptions: options, completion: completion, dismissHandler: dismissHandler)
     }
     
     /// Present contentView at center and will reset presentationOptions's presentationPosition = .center, presentationDirection = .center, dismissDirection = .center
     @discardableResult
-    public static func presentViewAtCenter(contentView: UIView, presentationViewControllerHeight: CGFloat, fromViewController: UIViewController? = PJViewController.shared.modalViewController(), contentViewSize: CGSize = .zero, presentationOptions: PJPresentationOptions = PJPresentationOptions(), completion: (() -> Void)? = nil) -> PJPresentationViewController {
+    public static func presentViewAtCenter(contentView: UIView, presentationViewControllerHeight: CGFloat, fromViewController: UIViewController? = PJViewController.shared.modalViewController(), contentViewSize: CGSize = .zero, presentationOptions: PJPresentationOptions = PJPresentationOptions(), completion: (() -> Void)? = nil, dismissHandler: (() -> Void)? = nil) -> PJPresentationViewController {
         var options = PJPresentationOptions.copyPresentationOptions(presentationOptions: presentationOptions)
         options.presentationPosition = .center
         options.presentationDirection = .center
@@ -123,12 +126,12 @@ open class PJPresentationControllerManager: NSObject {
         if contentViewSize != .zero {
             options.contentViewLayoutContants = PJLayoutAnchorContants(leadingContant: 0.0, trailingContant: 0.0, topContant: 0.0, bottomContant: 0.0, widthContant: contentViewSize.width, heightContant: contentViewSize.height)
         }
-        return self.presentView(contentView: contentView, presentationViewControllerHeight: presentationViewControllerHeight, fromViewController: fromViewController, presentationOptions: options, completion: completion)
+        return self.presentView(contentView: contentView, presentationViewControllerHeight: presentationViewControllerHeight, fromViewController: fromViewController, presentationOptions: options, completion: completion, dismissHandler: dismissHandler)
     }
     
     /// Present contentView at top and will reset presentationOptions's presentationPosition = .top, presentationDirection = .topToBottom, dismissDirection = .bottomToTop
     @discardableResult
-    public static func presentViewAtTop(contentView: UIView, presentationViewControllerHeight: CGFloat, fromViewController: UIViewController? = PJViewController.shared.modalViewController(), contentViewSize: CGSize = .zero, presentationOptions: PJPresentationOptions = PJPresentationOptions(), completion: (() -> Void)? = nil) -> PJPresentationViewController {
+    public static func presentViewAtTop(contentView: UIView, presentationViewControllerHeight: CGFloat, fromViewController: UIViewController? = PJViewController.shared.modalViewController(), contentViewSize: CGSize = .zero, presentationOptions: PJPresentationOptions = PJPresentationOptions(), completion: (() -> Void)? = nil, dismissHandler: (() -> Void)? = nil) -> PJPresentationViewController {
         var options = PJPresentationOptions.copyPresentationOptions(presentationOptions: presentationOptions)
         options.presentationPosition = .top
         options.presentationDirection = .topToBottom
@@ -136,7 +139,7 @@ open class PJPresentationControllerManager: NSObject {
         if contentViewSize != .zero {
             options.contentViewLayoutContants = PJLayoutAnchorContants(leadingContant: 0.0, trailingContant: 0.0, topContant: 0.0, bottomContant: 0.0, widthContant: contentViewSize.width, heightContant: contentViewSize.height)
         }
-        return self.presentView(contentView: contentView, presentationViewControllerHeight: presentationViewControllerHeight, fromViewController: fromViewController, presentationOptions: options, completion: completion)
+        return self.presentView(contentView: contentView, presentationViewControllerHeight: presentationViewControllerHeight, fromViewController: fromViewController, presentationOptions: options, completion: completion, dismissHandler: dismissHandler)
     }
     
     public static func dismiss(presentationViewController: PJPresentationViewController, animated flag: Bool, completion: (() -> Void)? = nil) {
