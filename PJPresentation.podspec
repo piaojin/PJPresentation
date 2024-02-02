@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
   #
 
   s.name         = "PJPresentation"
-  s.version      = "0.1.9"
+  s.version      = "1.0.0"
   s.summary      = "A pop view manager, easy to pop your custom view(just like UIAlertController)."
 
   # This description is used to generate tags and improve search results.

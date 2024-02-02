@@ -8,21 +8,19 @@
 
 import UIKit
 
-open class PJPresentationViewController: UIViewController {
+/// Note: Need set transitioningDelegate = self in UIViewController's init which implement PJPresentationProtocol.
+public protocol PJPresentationProtocol: UIViewController, NSObjectProtocol, UIViewControllerTransitioningDelegate {
+    var presentationOptions: PJPresentationOptions { get set }
+    var dismissClosure: (() -> Void)? { get set }
+    func pj_presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController?
+    func pj_animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning?
+    func pj_animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning?
+}
 
+open class PJPresentationViewController: UIViewController, PJPresentationProtocol {
     open var presentationOptions: PJPresentationOptions = PJPresentationOptions()
     
-    open var presentationViewControllerHeight: CGFloat {
-        return presentationOptions.presentationViewControllerHeight
-    }
-    
     open var dismissClosure: (() -> Void)?
-    
-    open var didShowPresentationViewClosure: ((PJPresentationViewController) -> Void)?
-    
-    open var presentationPosition: PJPresentationPosition {
-        return self.presentationOptions.presentationPosition
-    }
     
     open var contentViewLayoutContants: PJLayoutAnchorContants {
         return self.presentationOptions.contentViewLayoutContants
@@ -40,12 +38,6 @@ open class PJPresentationViewController: UIViewController {
     override open func viewDidLoad() {
         super.viewDidLoad()
         self.initView()
-        self.didShowPresentationViewClosure?(self)
-    }
-    
-    override open func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
 }
 
@@ -75,33 +67,34 @@ extension PJPresentationViewController {
     }
 }
 
-extension PJPresentationViewController: UIViewControllerTransitioningDelegate {
-    public func presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController? {
+extension PJPresentationProtocol {
+    public func pj_presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController? {
         let presentationController = PJPresentationController(presentedViewController: presented, presenting: presenting)
-        if self.presentationOptions.presentationViewControllerFrame == .zero {
+        if presentationOptions.presentationViewControllerFrame == .zero {
             var frameOfPresentedViewInContainerView = CGRect.zero
-            switch self.presentationPosition {
+            let  presentationViewControllerHeight = presentationOptions.presentationViewControllerHeight
+            switch presentationOptions.presentationPosition {
             case .bottom:
-                frameOfPresentedViewInContainerView = CGRect(x: 0.0, y: presented.view.bounds.height - self.presentationViewControllerHeight, width: presented.view.bounds.width, height: self.presentationViewControllerHeight)
+                frameOfPresentedViewInContainerView = CGRect(x: 0.0, y: presented.view.bounds.height - presentationViewControllerHeight, width: presented.view.bounds.width, height: presentationViewControllerHeight)
                 break
             case .center:
-                frameOfPresentedViewInContainerView = CGRect(x: 0.0, y: presented.view.center.y - self.presentationViewControllerHeight / 2.0, width: presented.view.bounds.width, height: self.presentationViewControllerHeight)
+                frameOfPresentedViewInContainerView = CGRect(x: 0.0, y: presented.view.center.y - presentationViewControllerHeight / 2.0, width: presented.view.bounds.width, height: presentationViewControllerHeight)
                 break
             case .top:
-                frameOfPresentedViewInContainerView = CGRect(x: 0.0, y: 0.0, width: presented.view.bounds.width, height: self.presentationViewControllerHeight)
+                frameOfPresentedViewInContainerView = CGRect(x: 0.0, y: 0.0, width: presented.view.bounds.width, height: presentationViewControllerHeight)
                 break
             }
             presentationController.dismissClosure = {
                 self.dismiss(animated: true, completion: self.dismissClosure)
                 PJPresentationControllerManager.presentedViewControllers.remove(by: self.hash)
             }
-            self.presentationOptions.frameOfPresentedViewInContainerView = frameOfPresentedViewInContainerView
+            presentationOptions.frameOfPresentedViewInContainerView = frameOfPresentedViewInContainerView
         }
-        presentationController.presentationOptions = self.presentationOptions
+        presentationController.presentationOptions = presentationOptions
         return presentationController
     }
     
-    public func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+    public func pj_animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         if let customPresentationAnimator = self.presentationOptions.customPresentationAnimator {
             return customPresentationAnimator
         }
@@ -110,12 +103,26 @@ extension PJPresentationViewController: UIViewControllerTransitioningDelegate {
         return presentationAnimator
     }
     
-    public func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+    public func pj_animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         if let customDismissAnimator = self.presentationOptions.customDismissAnimator {
             return customDismissAnimator
         }
         let dismissAnimator = PJDismissAnimator()
         dismissAnimator.presentationOptions = self.presentationOptions
         return dismissAnimator
+    }
+}
+
+extension PJPresentationViewController {
+    public func presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController? {
+        return pj_presentationController(forPresented: presented, presenting: presenting, source: source)
+    }
+    
+    public func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        return pj_animationController(forPresented: presented, presenting: presenting, source: source)
+    }
+    
+    public func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        return pj_animationController(forDismissed: dismissed)
     }
 }

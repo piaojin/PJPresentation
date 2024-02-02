@@ -27,7 +27,7 @@ public struct PJPresentationOptions {
     
     public var dismissDirection: PJPresentationDirection = .topToBottom
     
-    public var presentationViewControllerHeight: CGFloat = 0.0
+    public var presentationViewControllerHeight: CGFloat = 300.0
     
     public var presentationViewControllerFrame: CGRect = .zero
     

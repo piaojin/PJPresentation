@@ -60,16 +60,19 @@ extension PJWeakArray: Collection {
 
 open class PJPresentationControllerManager: NSObject {
     /// The all presented ViewControllers
-    public static var presentedViewControllers: PJWeakArray<PJPresentationViewController> = PJWeakArray([])
+    public static var presentedViewControllers: PJWeakArray<UIViewController> = PJWeakArray([])
     
     /// The top displaying ViewController
-    public static var topViewController: PJPresentationViewController? {
-        return presentedViewControllers.last
+    public static var topViewController: PJPresentationProtocol? {
+        return presentedViewControllers.last as? PJPresentationProtocol
     }
     
     /// The top displaying ContentView
     public static var topContentView: UIView? {
-        return topViewController?.contentView
+        if topViewController is PJPresentationViewController, let vc = topViewController as? PJPresentationViewController {
+            return vc.contentView
+        }
+        return topViewController?.view
     }
     
     /// Is current displaying ContentView
@@ -79,6 +82,27 @@ open class PJPresentationControllerManager: NSObject {
     
     /// Retry present viewcontroller count when present failed.
     private static var reTryCountDic: [Int: Int] = [:]
+    
+    /// Note: Need set transitioningDelegate = self in UIViewController's init.
+    @discardableResult
+    public static func present(_ presentViewController: PJPresentationProtocol, fromViewController: UIViewController? = nil, completion: (() -> Void)? = nil, dismissHandler: (() -> Void)? = nil) -> PJPresentationProtocol {
+        assert(presentViewController.transitioningDelegate != nil, "Need set transitioningDelegate = self in UIViewController which implement PJPresentationProtocol.")
+        assert(presentViewController.presentationOptions.presentationViewControllerHeight > 0, "presentationOptions.presentationViewControllerHeight in presentViewController should > 0.")
+        presentViewController.modalPresentationStyle = .custom
+        let viewController = getAvailableFromViewController(fromViewController)
+        
+        if viewController?.isBeingDismissed == true || viewController?.isBeingPresented == true {
+            reTryToPresent(presentViewController, fromViewController)
+        } else {
+            viewController?.present(presentViewController, animated: true, completion: completion)
+            presentedViewControllers.append(presentViewController)
+        }
+        
+        presentViewController.dismissClosure = {
+            dismissHandler?()
+        }
+        return presentViewController
+    }
     
     @discardableResult
     public static func presentView(contentView: UIView, presentationViewControllerHeight: CGFloat, fromViewController: UIViewController? = nil, presentationOptions: PJPresentationOptions = PJPresentationOptions(), completion: (() -> Void)? = nil, dismissHandler: (() -> Void)? = nil) -> PJPresentationViewController {
@@ -174,7 +198,7 @@ open class PJPresentationControllerManager: NSObject {
         PJPresentationControllerManager.presentedViewControllers.removeAll()
     }
     
-    private static func reTryToPresent(_ presentViewController: PJPresentationViewController, _ fromViewController: UIViewController?, completion: (() -> Void)? = nil) {
+    private static func reTryToPresent(_ presentViewController: PJPresentationProtocol, _ fromViewController: UIViewController?, completion: (() -> Void)? = nil) {
         var reTryCount = reTryCountDic[presentViewController.hash]
         if reTryCount == nil {
             reTryCount = 3
