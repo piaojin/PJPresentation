@@ -87,7 +87,6 @@ open class PJPresentationControllerManager: NSObject {
     @discardableResult
     public static func present(_ presentViewController: PJPresentationProtocol, fromViewController: UIViewController? = nil, completion: (() -> Void)? = nil, dismissHandler: (() -> Void)? = nil) -> PJPresentationProtocol {
         assert(presentViewController.transitioningDelegate != nil, "Need set transitioningDelegate = self in UIViewController which implement PJPresentationProtocol.")
-        assert(presentViewController.presentationOptions.presentationViewControllerHeight > 0, "presentationOptions.presentationViewControllerHeight in presentViewController should > 0.")
         presentViewController.modalPresentationStyle = .custom
         let viewController = getAvailableFromViewController(fromViewController)
         
@@ -104,14 +103,18 @@ open class PJPresentationControllerManager: NSObject {
         return presentViewController
     }
     
+    /// Present contentView
+    /// - Parameter contentWidth: Set contentWidth to specify contentView's width otherwise will fill up the screen.
+    /// - Parameter contentHeight: Set contentHeight to specify contentView's height otherwise will use the contentView's autolayout's height.
+    /// - Parameter top, bottom, leading, trailing: The contentView top, bottom, leading, trailing constraints to the PJPresentationViewController's view.
+    /// - Parameter PJAnchorContant: Set isAlignSafeArea = true if want align safe areas.
     @discardableResult
-    public static func presentView(contentView: UIView, presentationViewControllerHeight: CGFloat, fromViewController: UIViewController? = nil, presentationOptions: PJPresentationOptions = PJPresentationOptions(), completion: (() -> Void)? = nil, dismissHandler: (() -> Void)? = nil) -> PJPresentationViewController {
+    public static func presentView(contentView: UIView, fromViewController: UIViewController? = nil, contentWidth: CGFloat = 0, contentHeight: CGFloat = 0, top: PJAnchorContant = PJAnchorContantDefault, bottom: PJAnchorContant = PJAnchorContantDefault, leading: PJAnchorContant = PJAnchorContantDefault, trailing: PJAnchorContant = PJAnchorContantDefault, presentationOptions: PJPresentationOptions = PJPresentationOptions(), completion: (() -> Void)? = nil, dismissHandler: (() -> Void)? = nil) -> PJPresentationViewController {
         let presentViewController = PJPresentationViewController(contentView: contentView, presentationOptions: presentationOptions)
-        // UIModalPresentationStyle
         presentViewController.modalPresentationStyle = .custom
-        var tempOptions = PJPresentationOptions.copyPresentationOptions(presentationOptions: presentationOptions)
-        tempOptions.presentationViewControllerHeight = presentationViewControllerHeight
-        presentViewController.presentationOptions = tempOptions
+        var options = PJPresentationOptions.copyPresentationOptions(presentationOptions: presentationOptions)
+        options.contentViewLayoutContants = (leading: leading, trailing: trailing, top: top, bottom: bottom, width: contentWidth, height: contentHeight)
+        presentViewController.presentationOptions = options
         let viewController = getAvailableFromViewController(fromViewController)
         
         if viewController?.isBeingDismissed == true || viewController?.isBeingPresented == true {
@@ -127,43 +130,46 @@ open class PJPresentationControllerManager: NSObject {
         return presentViewController
     }
     
-    /// Present contentView at bottom and will reset presentationOptions's presentationPosition = .bottom, presentationDirection = .bottomToTop, dismissDirection = .topToBottom
+    /// Present contentView at bottom and will reset presentationOptions's presentAt = .bottom, presentFromDirection = .bottomToTop, dismissFromDirection = .topToBottom
+    /// - Parameter contentWidth: Set contentWidth to specify contentView's width otherwise will fill up the screen.
+    /// - Parameter contentHeight: Set contentHeight to specify contentView's height otherwise will use the contentView's autolayout's height.
+    /// - Parameter top, bottom, leading, trailing: The contentView top, bottom, leading, trailing constraints to the PJPresentationViewController's view.
+    /// - Parameter PJAnchorContant: Set isAlignSafeArea = true if want align safe areas.
     @discardableResult
-    public static func presentViewAtBottom(contentView: UIView, presentationViewControllerHeight: CGFloat, fromViewController: UIViewController? = PJViewController.shared.modalViewController(), contentViewSize: CGSize = .zero, presentationOptions: PJPresentationOptions = PJPresentationOptions(), completion: (() -> Void)? = nil, dismissHandler: (() -> Void)? = nil) -> PJPresentationViewController {
+    public static func presentViewAtBottom(contentView: UIView, fromViewController: UIViewController? = PJViewController.shared.modalViewController(), contentWidth: CGFloat = 0, contentHeight: CGFloat = 0, top: PJAnchorContant = PJAnchorContantDefault, bottom: PJAnchorContant = PJAnchorContantDefault, leading: PJAnchorContant = PJAnchorContantDefault, trailing: PJAnchorContant = PJAnchorContantDefault, presentationOptions: PJPresentationOptions = PJPresentationOptions(), completion: (() -> Void)? = nil, dismissHandler: (() -> Void)? = nil) -> PJPresentationViewController {
         var options = PJPresentationOptions.copyPresentationOptions(presentationOptions: presentationOptions)
-        options.presentationPosition = .bottom
-        options.presentationDirection = .bottomToTop
-        options.dismissDirection = .topToBottom
-        if contentViewSize != .zero {
-            options.contentViewLayoutContants = PJLayoutAnchorContants(leadingContant: 0.0, trailingContant: 0.0, topContant: 0.0, bottomContant: 0.0, widthContant: contentViewSize.width, heightContant: contentViewSize.height)
-        }
-        return self.presentView(contentView: contentView, presentationViewControllerHeight: presentationViewControllerHeight, fromViewController: fromViewController, presentationOptions: options, completion: completion, dismissHandler: dismissHandler)
+        options.presentAt = .bottom
+        options.presentFromDirection = .bottomToTop
+        options.dismissFromDirection = .topToBottom
+        return presentView(contentView: contentView, fromViewController: fromViewController, contentWidth: contentWidth, contentHeight: contentHeight, top: top, bottom: bottom, leading: leading, trailing: trailing, presentationOptions: options, completion: completion, dismissHandler: dismissHandler)
     }
     
-    /// Present contentView at center and will reset presentationOptions's presentationPosition = .center, presentationDirection = .center, dismissDirection = .center
+    /// Present contentView at center and will reset presentationOptions's presentAt = .center, presentFromDirection = .center, dismissFromDirection = .center
+    /// - Parameter contentWidth: Set contentWidth to specify contentView's width otherwise will fill up the screen.
+    /// - Parameter contentHeight: Set contentHeight to specify contentView's height otherwise will use the contentView's autolayout's height.
+    /// - Parameter top, bottom, leading, trailing: The contentView top, bottom, leading, trailing constraints to the PJPresentationViewController's view.
+    /// - Parameter PJAnchorContant: Set isAlignSafeArea = true if want align safe areas.
     @discardableResult
-    public static func presentViewAtCenter(contentView: UIView, presentationViewControllerHeight: CGFloat, fromViewController: UIViewController? = PJViewController.shared.modalViewController(), contentViewSize: CGSize = .zero, presentationOptions: PJPresentationOptions = PJPresentationOptions(), completion: (() -> Void)? = nil, dismissHandler: (() -> Void)? = nil) -> PJPresentationViewController {
+    public static func presentViewAtCenter(contentView: UIView, fromViewController: UIViewController? = PJViewController.shared.modalViewController(), contentWidth: CGFloat = 0, contentHeight: CGFloat = 0, top: PJAnchorContant = PJAnchorContantDefault, bottom: PJAnchorContant = PJAnchorContantDefault, leading: PJAnchorContant = PJAnchorContantDefault, trailing: PJAnchorContant = PJAnchorContantDefault, presentationOptions: PJPresentationOptions = PJPresentationOptions(), completion: (() -> Void)? = nil, dismissHandler: (() -> Void)? = nil) -> PJPresentationViewController {
         var options = PJPresentationOptions.copyPresentationOptions(presentationOptions: presentationOptions)
-        options.presentationPosition = .center
-        options.presentationDirection = .center
-        options.dismissDirection = .center
-        if contentViewSize != .zero {
-            options.contentViewLayoutContants = PJLayoutAnchorContants(leadingContant: 0.0, trailingContant: 0.0, topContant: 0.0, bottomContant: 0.0, widthContant: contentViewSize.width, heightContant: contentViewSize.height)
-        }
-        return self.presentView(contentView: contentView, presentationViewControllerHeight: presentationViewControllerHeight, fromViewController: fromViewController, presentationOptions: options, completion: completion, dismissHandler: dismissHandler)
+        options.presentAt = .center
+        options.presentFromDirection = .center
+        options.dismissFromDirection = .center
+        return presentView(contentView: contentView, fromViewController: fromViewController, contentWidth: contentWidth, contentHeight: contentHeight, top: top, bottom: bottom, leading: leading, trailing: trailing, presentationOptions: options, completion: completion, dismissHandler: dismissHandler)
     }
     
-    /// Present contentView at top and will reset presentationOptions's presentationPosition = .top, presentationDirection = .topToBottom, dismissDirection = .bottomToTop
+    /// Present contentView at top and will reset presentationOptions's presentAt = .top, presentFromDirection = .topToBottom, dismissFromDirection = .bottomToTop
+    /// - Parameter contentWidth: Set contentWidth to specify contentView's width otherwise will fill up the screen.
+    /// - Parameter contentHeight: Set contentHeight to specify contentView's height otherwise will use the contentView's autolayout's height.
+    /// - Parameter top, bottom, leading, trailing: The contentView top, bottom, leading, trailing constraints to the PJPresentationViewController's view.
+    /// - Parameter PJAnchorContant: Set isAlignSafeArea = true if want align safe areas.
     @discardableResult
-    public static func presentViewAtTop(contentView: UIView, presentationViewControllerHeight: CGFloat, fromViewController: UIViewController? = PJViewController.shared.modalViewController(), contentViewSize: CGSize = .zero, presentationOptions: PJPresentationOptions = PJPresentationOptions(), completion: (() -> Void)? = nil, dismissHandler: (() -> Void)? = nil) -> PJPresentationViewController {
+    public static func presentViewAtTop(contentView: UIView, fromViewController: UIViewController? = PJViewController.shared.modalViewController(), contentWidth: CGFloat = 0, contentHeight: CGFloat = 0, top: PJAnchorContant = PJAnchorContantDefault, bottom: PJAnchorContant = PJAnchorContantDefault, leading: PJAnchorContant = PJAnchorContantDefault, trailing: PJAnchorContant = PJAnchorContantDefault, presentationOptions: PJPresentationOptions = PJPresentationOptions(), completion: (() -> Void)? = nil, dismissHandler: (() -> Void)? = nil) -> PJPresentationViewController {
         var options = PJPresentationOptions.copyPresentationOptions(presentationOptions: presentationOptions)
-        options.presentationPosition = .top
-        options.presentationDirection = .topToBottom
-        options.dismissDirection = .bottomToTop
-        if contentViewSize != .zero {
-            options.contentViewLayoutContants = PJLayoutAnchorContants(leadingContant: 0.0, trailingContant: 0.0, topContant: 0.0, bottomContant: 0.0, widthContant: contentViewSize.width, heightContant: contentViewSize.height)
-        }
-        return self.presentView(contentView: contentView, presentationViewControllerHeight: presentationViewControllerHeight, fromViewController: fromViewController, presentationOptions: options, completion: completion, dismissHandler: dismissHandler)
+        options.presentAt = .top
+        options.presentFromDirection = .topToBottom
+        options.dismissFromDirection = .bottomToTop
+        return presentView(contentView: contentView, fromViewController: fromViewController, contentWidth: contentWidth, contentHeight: contentHeight, top: top, bottom: bottom, leading: leading, trailing: trailing, presentationOptions: options, completion: completion, dismissHandler: dismissHandler)
     }
     
     public static func dismiss(presentationViewController: PJPresentationViewController, animated flag: Bool, completion: (() -> Void)? = nil) {

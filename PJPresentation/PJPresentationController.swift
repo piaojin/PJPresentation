@@ -9,18 +9,13 @@
 import UIKit
 
 open class PJPresentationController: UIPresentationController {
-    //决定了弹出框的frame
-    override open var frameOfPresentedViewInContainerView: CGRect {
-        return self.presentationOptions.frameOfPresentedViewInContainerView
-    }
-    
     open var presentationOptions: PJPresentationOptions = PJPresentationOptions()
     
     //遮罩
     open var coverView: UIView = {
         let coverView = UIView()
         coverView.translatesAutoresizingMaskIntoConstraints = false
-        coverView.backgroundColor = UIColor.black.withAlphaComponent(0.5)
+        coverView.backgroundColor = .black.withAlphaComponent(0.5)
         coverView.alpha = 0.0
         coverView.isUserInteractionEnabled = true
         return coverView
@@ -34,22 +29,23 @@ open class PJPresentationController: UIPresentationController {
     
     //重写此方法可以在弹框即将显示时执行所需要的操作
     override open func presentationTransitionWillBegin() {
-        if self.presentationOptions.isShowCoverView {
-            self.containerView?.addSubview(self.coverView)
-            if let containerView = self.containerView {
-                self.coverView.topAnchor.constraint(equalTo: containerView.topAnchor).isActive = true
-                self.coverView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor).isActive = true
-                self.coverView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor).isActive = true
-                self.coverView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor).isActive = true
+        if presentationOptions.isShowCoverView {
+            coverView.backgroundColor = presentationOptions.coverViewBackColor
+            self.containerView?.addSubview(coverView)
+            if let containerView = containerView {
+                coverView.topAnchor.constraint(equalTo: containerView.topAnchor).isActive = true
+                coverView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor).isActive = true
+                coverView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor).isActive = true
+                coverView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor).isActive = true
             }
             
-            UIView.animate(withDuration: 0.5) {
+            UIView.animate(withDuration: presentationOptions.coverShowDuration) {
                 self.coverView.alpha = 1.0
             }
             
             if self.presentationOptions.isTapCoverViewToDissmiss {
                 let tap = UITapGestureRecognizer(target: self, action: #selector(dismiss))
-                self.coverView.addGestureRecognizer(tap)
+                coverView.addGestureRecognizer(tap)
             }
         }
     }
@@ -61,19 +57,17 @@ open class PJPresentationController: UIPresentationController {
     
     //重写此方法可以在弹框即将消失时执行所需要的操作
     override open func dismissalTransitionWillBegin() {
-        UIView.animate(withDuration: 0.5) {
+        UIView.animate(withDuration: presentationOptions.coverDismissDuration) {
             self.coverView.alpha = 0.0
         }
     }
     
     //重写此方法可以在弹框消失之后执行所需要的操作
     override open func dismissalTransitionDidEnd(_ completed: Bool) {
-        if completed {
-            self.coverView.removeFromSuperview()
-        }
+        coverView.removeFromSuperview()
     }
     
     @objc open func dismiss() {
-        self.dismissClosure?()
+        dismissClosure?()
     }
 }

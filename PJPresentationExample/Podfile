@@ -6,5 +6,7 @@ target 'PJPresentationExample' do
   use_frameworks!
   # Pods for MTShopList
 pod 'PJPresentation', :path => '../../PJPresentation'
+pod 'MJRefresh', '~> 3.7.5'
+pod 'LookinServer', :configurations => ['Debug']
 
 end

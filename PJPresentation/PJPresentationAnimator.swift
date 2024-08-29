@@ -13,7 +13,7 @@ open class PJPresentationAnimator: NSObject, UIViewControllerAnimatedTransitioni
     open var presentationOptions: PJPresentationOptions = PJPresentationOptions()
     
     open func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
-        return self.presentationOptions.transitionDuration
+        return presentationOptions.transitionDuration
     }
     
     open func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
@@ -29,29 +29,25 @@ open class PJPresentationAnimator: NSObject, UIViewControllerAnimatedTransitioni
         toView.isHidden = true
         toView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor).isActive = true
         toView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor).isActive = true
-        toView.heightAnchor.constraint(equalToConstant: self.presentationOptions.presentationViewControllerHeight).isActive = true
         
-        switch self.presentationOptions.presentationDirection {
+        switch presentationOptions.presentFromDirection {
         case .bottomToTop:
-            self.fromBottomToTop(toView: toView, containerView: containerView, using: transitionContext)
-            break
+            presentFromBottom(toView: toView, containerView: containerView, using: transitionContext)
         case .topToBottom:
-            self.fromTopToBottom(toView: toView, containerView: containerView, using: transitionContext)
-            break
+            presentFromTop(toView: toView, containerView: containerView, using: transitionContext)
         case .center:
-            self.fromCenter(toView: toView, containerView: containerView, using: transitionContext)
-            break
+            fromCenter(toView: toView, containerView: containerView, using: transitionContext)
         }
         toView.isHidden = false
         
-        if self.presentationOptions.isUseSpringAnimation {
-            UIView.animate(withDuration: self.transitionDuration(using: transitionContext), delay: self.presentationOptions.delay, usingSpringWithDamping: self.presentationOptions.usingSpringWithDamping, initialSpringVelocity: self.presentationOptions.initialSpringVelocity, options: self.presentationOptions.options, animations: {
+        if presentationOptions.isUseSpringAnimation {
+            UIView.animate(withDuration: transitionDuration(using: transitionContext), delay: presentationOptions.delay, usingSpringWithDamping: presentationOptions.usingSpringWithDamping, initialSpringVelocity: presentationOptions.initialSpringVelocity, options: presentationOptions.options, animations: {
                 toView.transform = .identity
             }) { (completed) in
                 transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
             }
         } else {
-            UIView.animate(withDuration: self.transitionDuration(using: transitionContext), animations: {
+            UIView.animate(withDuration: transitionDuration(using: transitionContext), animations: {
                 toView.transform = .identity
             }, completion: { (completed) in
                 transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
@@ -59,64 +55,38 @@ open class PJPresentationAnimator: NSObject, UIViewControllerAnimatedTransitioni
         }
     }
     
-    private func fromBottomToTop(toView: UIView, containerView: UIView, using transitionContext: UIViewControllerContextTransitioning) {
-        switch self.presentationOptions.presentationPosition {
+    private func presentFromBottom(toView: UIView, containerView: UIView, using transitionContext: UIViewControllerContextTransitioning) {
+        toView.layoutIfNeeded()
+        switch presentationOptions.presentAt {
         case .bottom:
-            self.fromBottomToTopPresentationPositionBottom(toView: toView, containerView: containerView, using: transitionContext)
-            break
+            toView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor).isActive = true
+            toView.transform = CGAffineTransform(translationX: 0.0, y: toView.bounds.size.height)
         case .top:
-            self.fromBottomToTopPresentationPositionTop(toView: toView, containerView: containerView, using: transitionContext)
-            break
+            toView.topAnchor.constraint(equalTo: containerView.topAnchor).isActive = true
+            toView.transform = CGAffineTransform(translationX: 0.0, y: containerView.bounds.size.height)
         case .center:
-            self.fromBottomToTopPresentationPositionCenter(toView: toView, containerView: containerView, using: transitionContext)
-            break
+            toView.centerYAnchor.constraint(equalTo: containerView.centerYAnchor).isActive = true
+            toView.transform = CGAffineTransform(translationX: 0.0, y: (containerView.bounds.size.height + toView.bounds.size.height) / 2)
         }
-        toView.transform = CGAffineTransform(translationX: 0.0, y: containerView.frame.size.height)
     }
     
-    private func fromTopToBottom(toView: UIView, containerView: UIView, using transitionContext: UIViewControllerContextTransitioning) {
-        switch self.presentationOptions.presentationPosition {
+    private func presentFromTop(toView: UIView, containerView: UIView, using transitionContext: UIViewControllerContextTransitioning) {
+        toView.layoutIfNeeded()
+        switch presentationOptions.presentAt {
         case .bottom:
-            self.fromTopToBottomPresentationPositionBottom(toView: toView, containerView: containerView, using: transitionContext)
-            toView.transform = CGAffineTransform(translationX: 0.0, y: -(containerView.frame.size.height - self.presentationOptions.presentationViewControllerHeight))
-            break
+            toView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor).isActive = true
+            toView.transform = CGAffineTransform(translationX: 0.0, y: -containerView.frame.size.height)
         case .top:
-            self.fromTopToBottomPresentationPositionTop(toView: toView, containerView: containerView, using: transitionContext)
-            toView.transform = CGAffineTransform(translationX: 0.0, y: -self.presentationOptions.presentationViewControllerHeight)
-            break
+            toView.topAnchor.constraint(equalTo: containerView.topAnchor).isActive = true
+            toView.transform = CGAffineTransform(translationX: 0.0, y: -toView.frame.size.height)
         case .center:
-            self.fromTopToBottomPresentationPositionCenter(toView: toView, containerView: containerView, using: transitionContext)
-            toView.transform = CGAffineTransform(translationX: 0.0, y: -(containerView.frame.size.height - self.presentationOptions.presentationViewControllerHeight) / 2.0)
-            break
+            toView.centerYAnchor.constraint(equalTo: containerView.centerYAnchor).isActive = true
+            toView.transform = CGAffineTransform(translationX: 0.0, y: -(containerView.frame.size.height + toView.frame.size.height) / 2.0)
         }
     }
     
     private func fromCenter(toView: UIView, containerView: UIView, using transitionContext: UIViewControllerContextTransitioning) {
         toView.centerYAnchor.constraint(equalTo: containerView.centerYAnchor).isActive = true
         toView.transform = CGAffineTransform(scaleX: 0.0, y: 0.0)
-    }
-    
-    private func fromBottomToTopPresentationPositionBottom(toView: UIView, containerView: UIView, using transitionContext: UIViewControllerContextTransitioning) {
-        toView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor).isActive = true
-    }
-    
-    private func fromBottomToTopPresentationPositionCenter(toView: UIView, containerView: UIView, using transitionContext: UIViewControllerContextTransitioning) {
-        toView.centerYAnchor.constraint(equalTo: containerView.centerYAnchor).isActive = true
-    }
-    
-    private func fromBottomToTopPresentationPositionTop(toView: UIView, containerView: UIView, using transitionContext: UIViewControllerContextTransitioning) {
-        toView.topAnchor.constraint(equalTo: containerView.topAnchor).isActive = true
-    }
-    
-    private func fromTopToBottomPresentationPositionBottom(toView: UIView, containerView: UIView, using transitionContext: UIViewControllerContextTransitioning) {
-        toView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor).isActive = true
-    }
-    
-    private func fromTopToBottomPresentationPositionCenter(toView: UIView, containerView: UIView, using transitionContext: UIViewControllerContextTransitioning) {
-        toView.centerYAnchor.constraint(equalTo: containerView.centerYAnchor).isActive = true
-    }
-    
-    private func fromTopToBottomPresentationPositionTop(toView: UIView, containerView: UIView, using transitionContext: UIViewControllerContextTransitioning) {
-        toView.topAnchor.constraint(equalTo: containerView.topAnchor).isActive = true
     }
 }

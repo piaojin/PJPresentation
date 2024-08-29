@@ -13,7 +13,7 @@ open class PJDismissAnimator: NSObject, UIViewControllerAnimatedTransitioning {
     open var presentationOptions: PJPresentationOptions = PJPresentationOptions()
     
     open func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
-        return self.presentationOptions.dismissTransitionDuration
+        return presentationOptions.dismissTransitionDuration
     }
     
     open func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
@@ -27,35 +27,31 @@ open class PJDismissAnimator: NSObject, UIViewControllerAnimatedTransitioning {
         containerView.addSubview(fromView)
         fromView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor).isActive = true
         fromView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor).isActive = true
-        fromView.heightAnchor.constraint(equalToConstant: self.presentationOptions.presentationViewControllerHeight).isActive = true
         
         var translationY: CGFloat = 0.0
         
-        switch self.presentationOptions.presentationPosition {
+        switch presentationOptions.presentAt {
         case .bottom:
             fromView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor).isActive = true
-            if self.presentationOptions.dismissDirection == .topToBottom {
-                translationY = self.presentationOptions.presentationViewControllerHeight
+            if presentationOptions.dismissFromDirection == .topToBottom {
+                translationY = fromView.bounds.height
             } else {
                 translationY = -containerView.frame.size.height
             }
-            break
         case .top:
             fromView.topAnchor.constraint(equalTo: containerView.topAnchor).isActive = true
-            if self.presentationOptions.dismissDirection == .topToBottom {
+            if presentationOptions.dismissFromDirection == .topToBottom {
                 translationY = containerView.frame.size.height
             } else {
-                translationY = -self.presentationOptions.presentationViewControllerHeight
+                translationY = -fromView.bounds.height
             }
-            break
         case .center:
             fromView.centerYAnchor.constraint(equalTo: containerView.centerYAnchor).isActive = true
-            translationY = self.positioninCenterTranslationY(containerView: containerView)
-            break
+            translationY = positioninCenterTranslationY(fromView: fromView, containerView: containerView)
         }
         
-        UIView.animate(withDuration: self.transitionDuration(using: transitionContext), animations: {
-            if self.presentationOptions.dismissDirection == .center {
+        UIView.animate(withDuration: transitionDuration(using: transitionContext), animations: {
+            if self.presentationOptions.dismissFromDirection == .center {
                 fromView.transform = CGAffineTransform(scaleX: 0.0, y: 0.0)
             } else {
                 fromView.transform = CGAffineTransform(translationX: 0.0, y: translationY)
@@ -65,15 +61,13 @@ open class PJDismissAnimator: NSObject, UIViewControllerAnimatedTransitioning {
         })
     }
     
-    private func positioninCenterTranslationY(containerView: UIView) -> CGFloat {
+    private func positioninCenterTranslationY(fromView: UIView, containerView: UIView) -> CGFloat {
         var translationY: CGFloat = 0.0
-        switch self.presentationOptions.dismissDirection {
+        switch presentationOptions.dismissFromDirection {
         case .topToBottom:
-            translationY = self.presentationOptions.presentationViewControllerHeight + (containerView.frame.size.height - self.presentationOptions.presentationViewControllerHeight) / 2.0
-            break
+            translationY = fromView.bounds.height + (containerView.frame.size.height - fromView.bounds.height) / 2.0
         case .bottomToTop:
-            translationY = -self.presentationOptions.presentationViewControllerHeight - (containerView.frame.size.height - self.presentationOptions.presentationViewControllerHeight) / 2.0
-            break
+            translationY = -fromView.bounds.height - (containerView.frame.size.height - fromView.bounds.height) / 2.0
         case .center:
             break
         }

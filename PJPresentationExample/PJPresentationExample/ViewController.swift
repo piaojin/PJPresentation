@@ -10,7 +10,6 @@ import UIKit
 import PJPresentation
 
 class ViewController: UIViewController {
-
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = .white
@@ -21,24 +20,38 @@ class ViewController: UIViewController {
         rightButton.addTarget(self, action: #selector(click), for: .touchUpInside)
     }
     
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-    
     @objc func click() {
-        let contentView = UIView()
-        contentView.backgroundColor = .orange
         
-        /****Simple way****/
-//        PJPresentationControllerManager.presentView(contentView: contentView, presentationViewControllerHeight: 200.0)
-        
-        /****Options way****/
-        var options = PJPresentationOptions()
-        options.presentationPosition = .bottom
-        options.dismissDirection = .topToBottom
-        options.presentationDirection = .bottomToTop
-        let vc = PJPresentationControllerManager.presentView(contentView: contentView, presentationViewControllerHeight: 250, presentationOptions: options)
+        let customVC = CustomViewController()
+        PJPresentationControllerManager.present(customVC, dismissHandler:  {
+            let contentView = UIView()
+            contentView.backgroundColor = .orange
+            
+            //        ***Options way***
+            var options = PJPresentationOptions()
+            options.presentAt = .bottom
+            options.dismissFromDirection = .topToBottom
+            options.presentFromDirection = .bottomToTop
+            PJPresentationControllerManager.presentView(contentView: contentView, contentHeight: 250, presentationOptions: options)
+            
+            DispatchQueue.main.asyncAfter(deadline: .now()) {
+                
+                PJPresentationControllerManager.dismiss(animated: true) {
+                    let contentView = UIView()
+                    contentView.backgroundColor = .orange
+                    
+                    /****Simple way****/
+                    //        PJPresentationControllerManager.presentView(contentView: contentView, contentHeight: 200.0)
+                    
+                    /****Options way****/
+                    var options = PJPresentationOptions()
+                    options.presentAt = .bottom
+                    options.dismissFromDirection = .topToBottom
+                    options.presentFromDirection = .bottomToTop
+                    PJPresentationControllerManager.presentView(contentView: contentView, contentHeight: 250, presentationOptions: options)
+                }
+            }
+        })
     }
 }
 

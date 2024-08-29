@@ -18,30 +18,34 @@ public enum PJPresentationDirection {
 }
 
 /// Note: widthContant & heightContant 的优先级高于其他约束
-public typealias PJLayoutAnchorContants = (leadingContant: CGFloat, trailingContant: CGFloat, topContant: CGFloat, bottomContant: CGFloat, widthContant: CGFloat, heightContant: CGFloat)
+public typealias PJLayoutAnchorContants = (leading: PJAnchorContant, trailing: PJAnchorContant, top: PJAnchorContant, bottom: PJAnchorContant, width: CGFloat, height: CGFloat)
+
+public typealias PJAnchorContant = (contant: CGFloat, isAlignSafeArea: Bool)
+
+public let PJAnchorContantDefault: PJAnchorContant = (contant: 0.0, isAlignSafeArea: false)
 
 public struct PJPresentationOptions {
-    public var presentationPosition : PJPresentationPosition = .bottom
+    // 视图最终显示位置
+    public var presentAt : PJPresentationPosition = .bottom
     
-    public var presentationDirection: PJPresentationDirection = .bottomToTop
+    // 视图弹出方向
+    public var presentFromDirection: PJPresentationDirection = .bottomToTop
     
-    public var dismissDirection: PJPresentationDirection = .topToBottom
-    
-    public var presentationViewControllerHeight: CGFloat = 300.0
-    
-    public var presentationViewControllerFrame: CGRect = .zero
-    
-    // 决定了弹出框的frame
-    public var frameOfPresentedViewInContainerView: CGRect = .zero
+    // 视图消失方向
+    public var dismissFromDirection: PJPresentationDirection = .topToBottom
     
     public var backgroundColor: UIColor = .clear
     
-    public var transitionDuration: TimeInterval = 0.5
+    public var transitionDuration: TimeInterval = 0.3
     
-    public var dismissTransitionDuration: TimeInterval = 0.5
+    public var dismissTransitionDuration: TimeInterval = 0.3
+    
+    public var coverShowDuration: TimeInterval = 0.5
+    
+    public var coverDismissDuration: TimeInterval = 0.5
     
     // 决定了弹出框中contentView的frame
-    public var contentViewLayoutContants: PJLayoutAnchorContants = (leadingContant: 0.0, trailingContant: 0.0, topContant: 0.0, bottomContant: 0.0, widthContant: 0.0, heightContant: 0.0)
+    public var contentViewLayoutContants: PJLayoutAnchorContants = (leading: PJAnchorContantDefault, trailing: PJAnchorContantDefault, top: PJAnchorContantDefault, bottom: PJAnchorContantDefault, width: 0.0, height: 0.0)
     
     public var coverViewBackColor = UIColor.black.withAlphaComponent(0.5)
     

@@ -1,15 +1,28 @@
 PODS:
-  - PJPresentation (1.0.0)
+  - LookinServer (1.2.2):
+    - LookinServer/Core (= 1.2.2)
+  - LookinServer/Core (1.2.2)
+  - MJRefresh (3.7.5)
+  - PJPresentation (1.0.1)
 
 DEPENDENCIES:
+  - LookinServer
+  - MJRefresh (~> 3.7.5)
   - PJPresentation (from `../../PJPresentation`)
+
+SPEC REPOS:
+  trunk:
+    - LookinServer
+    - MJRefresh
 
 EXTERNAL SOURCES:
   PJPresentation:
     :path: "../../PJPresentation"
 
 SPEC CHECKSUMS:
-  PJPresentation: 77022b884c3cb179f16b6924237f8d83b3c424d5
+  LookinServer: 3204eefff2f18e19fa546931fb5f1b88bc709a0b
+  MJRefresh: fdf5e979eb406a0341468932d1dfc8b7f9fce961
+  PJPresentation: a72cb5e6a396b26512a8827b8a79563d3134501a
 
 PODFILE CHECKSUM: 1c77f622da70b02890e6ed5d20898915227886ed
 
